@@ -11,7 +11,7 @@ EPSILON = 1e-8
 batch_size = 64
 
 
-class BaseLearner(object):
+class BaseLearner(object): #Called by SLCA in slca.py
     def __init__(self, args):
         self._cur_task = -1
         self._known_classes = 0

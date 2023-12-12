@@ -605,7 +605,7 @@ def checkpoint_filter_fn(state_dict, model):
     return out_dict
 
 
-def _create_vision_transformer(variant, pretrained=False, default_cfg=None, **kwargs):
+def _create_vision_transformer(variant, pretrained=False, default_cfg=None, **kwargs): #vit_base_patch16_224_in21k() calls this function
     default_cfg = default_cfg or default_cfgs[variant]
     if kwargs.get('features_only', None):
         raise RuntimeError('features_only not implemented for Vision Transformer models.')
@@ -632,7 +632,7 @@ def _create_vision_transformer(variant, pretrained=False, default_cfg=None, **kw
 
 
 @register_model
-def vit_base_patch16_224_in21k(pretrained=False, adapter=False, **kwargs):
+def vit_base_patch16_224_in21k(pretrained=False, adapter=False, **kwargs): # get_convnet() in inc_net.py calls this function
     """ ViT-Base model (ViT-B/16) from original paper (https://arxiv.org/abs/2010.11929).
     ImageNet-21k weights @ 224x224, source https://github.com/google-research/vision_transformer.
     NOTE: this model has valid 21k classifier head and no representation (pre-logits) layer

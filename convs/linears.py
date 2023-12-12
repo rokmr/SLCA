@@ -10,7 +10,7 @@ from timm.models.layers.weight_init import trunc_normal_
 from timm.models.layers import Mlp
 from copy import deepcopy
 
-class SimpleContinualLinear(nn.Module):
+class SimpleContinualLinear(nn.Module): # generate_fc() in inc_net.py calls this CLASS
     def __init__(self, embed_dim, nb_classes, feat_expand=False, with_norm=False):
         super().__init__()
 

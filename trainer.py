@@ -8,7 +8,7 @@ from utils.toolkit import count_parameters
 import os
 import numpy as np
 
-def train(args):
+def train(args): # main()in main.py calls this function
     seed_list = copy.deepcopy(args['seed'])
     device = copy.deepcopy(args['device'])
 
@@ -25,7 +25,7 @@ def train(args):
         
 
 
-def _train(args):
+def _train(args): # train() calls this function
     try:
         os.mkdir("logs/{}_{}".format(args['model_name'], args['model_postfix']))
     except:
@@ -46,12 +46,14 @@ def _train(args):
     print_args(args)
     data_manager = DataManager(args['dataset'], args['shuffle'], args['seed'], args['init_cls'], args['increment'])
     model = factory.get_model(args['model_name'], args)
-
+    # Upto this point, we dataset, model's backbone (VIT) is set  
     cnn_curve, nme_curve = {'top1': [], 'top5': []}, {'top1': [], 'top5': []}
     for task in range(data_manager.nb_tasks):
         logging.info('All params: {}'.format(count_parameters(model._network)))
         logging.info('Trainable params: {}'.format(count_parameters(model._network, True)))
         model.incremental_train(data_manager)
+        print('All params: {}'.format(count_parameters(model._network)))
+        print('Trainable params: {}'.format(count_parameters(model._network, True)))
 
         cnn_accy, nme_accy = model.eval_task()
         model.after_task()
@@ -110,6 +112,6 @@ def _set_random():
     torch.backends.cudnn.benchmark = False
 
 
-def print_args(args):
+def print_args(args): #_train() calls this function
     for key, value in args.items():
         logging.info('{}: {}'.format(key, value))

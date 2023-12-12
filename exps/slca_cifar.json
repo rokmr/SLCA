@@ -12,7 +12,7 @@
     "convnet_type": "vit-b-p16",
     "device": ["0","1"],
     "seed": [1993, 1996, 1997],
-    "epochs": 20,
+    "epochs": 2,
     "ca_epochs": 5,
     "ca_with_logit_norm": 0.1,
     "milestones": [18]

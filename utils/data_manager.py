@@ -7,28 +7,28 @@ from utils.data import iCIFAR10, iCIFAR100, iImageNet100, iImageNet1000, iCIFAR1
 from copy import deepcopy
 import random
 
-class DataManager(object):
+class DataManager(object): # _train() in trainer.py calls this class
     def __init__(self, dataset_name, shuffle, seed, init_cls, increment):
         self.dataset_name = dataset_name
         self._setup_data(dataset_name, shuffle, seed)
         assert init_cls <= len(self._class_order), 'No enough classes.'
         self._increments = [init_cls]
         while sum(self._increments) + increment < len(self._class_order):
-            self._increments.append(increment)
-        offset = len(self._class_order) - sum(self._increments)
+            self._increments.append(increment)   #Finally self._increments: [10, 10, 10, 10, 10, 10, 10, 10, 10]
+        offset = len(self._class_order) - sum(self._increments) #offset: 10
         if offset > 0:
-            self._increments.append(offset)
+            self._increments.append(offset) # Now self._increments: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
 
     @property
     def nb_tasks(self):
         return len(self._increments)
 
-    def get_task_size(self, task):
-        return self._increments[task]
+    def get_task_size(self, task): # incremental_train() in slca.py calls this function
+        return self._increments[task] 
 
-    def get_dataset(self, indices, source, mode, appendent=None, ret_data=False, with_raw=False, with_noise=False):
+    def get_dataset(self, indices, source, mode, appendent=None, ret_data=False, with_raw=False, with_noise=False): # incremental_train() in slca.py calls this function
         if source == 'train':
-            x, y = self._train_data, self._train_targets
+g            x, y = self._train_data, self._train_targets
         elif source == 'test':
             x, y = self._test_data, self._test_targets
         else:
@@ -105,14 +105,14 @@ class DataManager(object):
         return DummyDataset(train_data, train_targets, trsf, self.use_path), \
             DummyDataset(val_data, val_targets, trsf, self.use_path)
 
-    def _setup_data(self, dataset_name, shuffle, seed):
+    def _setup_data(self, dataset_name, shuffle, seed): # DataMananger() calls this function 
         idata = _get_idata(dataset_name)
         idata.download_data()
 
         # Data
         self._train_data, self._train_targets = idata.train_data, idata.train_targets
         self._test_data, self._test_targets = idata.test_data, idata.test_targets
-        self.use_path = idata.use_path
+        self.use_path = idata.use_path        #False for CIFAR100
 
         # Transforms
         self._train_trsf = idata.train_trsf
@@ -127,18 +127,18 @@ class DataManager(object):
         else:
             order = idata.class_order
         self._class_order = order
-        logging.info(self._class_order)
+        logging.info(self._class_order)  # seed 1993: [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28, 53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97, 2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7, 63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33]
 
         # Map indices
-        self._train_targets = _map_new_class_index(self._train_targets, self._class_order)
+        self._train_targets = _map_new_class_index(self._train_targets, self._class_order) #np.array(list(map(lambda x: order.index(x), y)))
         self._test_targets = _map_new_class_index(self._test_targets, self._class_order)
 
-    def _select(self, x, y, low_range, high_range):
+    def _select(self, x, y, low_range, high_range): #get_dataset() in DataManager() calls this function
         idxes = np.where(np.logical_and(y >= low_range, y < high_range))[0]
         return x[idxes], y[idxes]
 
 
-class DummyDataset(Dataset):
+class DummyDataset(Dataset): #get_dataset() in DataManager() calls this class
     def __init__(self, images, labels, trsf, use_path=False, with_raw=False, with_noise=False):
         assert len(images) == len(labels), 'Data size error!'
         self.images = images
@@ -177,11 +177,11 @@ class DummyDataset(Dataset):
         return idx, image, label
 
 
-def _map_new_class_index(y, order):
+def _map_new_class_index(y, order): # _setup_data() calls this function
     return np.array(list(map(lambda x: order.index(x), y)))
 
 
-def _get_idata(dataset_name):
+def _get_idata(dataset_name): # _setup_data() in DataManager() calls this function
     name = dataset_name.lower()
     if name == 'cifar10':
         return iCIFAR10()

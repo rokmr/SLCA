@@ -53,7 +53,7 @@ class iCIFAR100(iData):
         self.train_data, self.train_targets = train_dataset.data, np.array(train_dataset.targets)
         self.test_data, self.test_targets = test_dataset.data, np.array(test_dataset.targets)
 
-class iCIFAR100_224(iCIFAR100):
+class iCIFAR100_224(iCIFAR100): # _get_idata in data_manager.py calla this CLASS
     train_trsf = [
         transforms.RandomResizedCrop(224, interpolation=3),
         transforms.RandomHorizontalFlip(),

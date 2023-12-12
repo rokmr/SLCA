@@ -7,7 +7,7 @@ from convs.linears import SimpleContinualLinear
 from convs.vits import vit_base_patch16_224_in21k, vit_base_patch16_224_mocov3
 import torch.nn.functional as F
 
-def get_convnet(convnet_type, pretrained=False):
+def get_convnet(convnet_type, pretrained=False): # BaseNet in inc_net.py calls this function
     name = convnet_type.lower()
     if name == 'resnet32':
         return resnet32()
@@ -29,7 +29,7 @@ def get_convnet(convnet_type, pretrained=False):
         raise NotImplementedError('Unknown type {}'.format(convnet_type))
 
 
-class BaseNet(nn.Module):
+class BaseNet(nn.Module): # FinetuneIncrementalNet in inc_net.py calls this CLASS
 
     def __init__(self, convnet_type, pretrained):
         super(BaseNet, self).__init__()
@@ -74,7 +74,7 @@ class BaseNet(nn.Module):
 
         return self
 
-class FinetuneIncrementalNet(BaseNet):
+class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
 
     def __init__(self, convnet_type, pretrained, fc_with_ln=False):
         super().__init__(convnet_type, pretrained)
@@ -93,11 +93,13 @@ class FinetuneIncrementalNet(BaseNet):
         return features
 
 
-    def update_fc(self, nb_classes, freeze_old=True):
-        if self.fc is None:
+    def update_fc(self, nb_classes, freeze_old=True): # incremental_train() in class SLCA in slca.py calls this function
+        if self.fc is None: # self.fc is None for the first task
             self.fc = self.generate_fc(self.feature_dim, nb_classes)
+            print(f'self.fc: {self.fc}')
         else:
             self.fc.update(nb_classes, freeze_old=freeze_old)
+            print(f'self.fc: {self.fc}')
 
     def save_old_fc(self):
         if self.old_fc is None:
@@ -105,7 +107,7 @@ class FinetuneIncrementalNet(BaseNet):
         else:
             self.old_fc.heads.append(copy.deepcopy(self.fc.heads[-1]))
 
-    def generate_fc(self, in_dim, out_dim):
+    def generate_fc(self, in_dim, out_dim): #update_fc() in this class calls this function for the first task
         fc = SimpleContinualLinear(in_dim, out_dim)
 
         return fc

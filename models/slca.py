@@ -14,7 +14,7 @@ from utils.toolkit import tensor2numpy, accuracy
 import copy
 import os
 
-epochs = 20
+epochs = 3
 lrate = 0.01 
 milestones = [60,100,140]
 lrate_decay = 0.1
@@ -26,7 +26,7 @@ num_workers = 8
 ca_epochs = 5
 
 
-class SLCA(BaseLearner):
+class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
     def __init__(self, args):
         super().__init__(args)
         self._network = FinetuneIncrementalNet(args['convnet_type'], pretrained=True)
@@ -50,7 +50,7 @@ class SLCA(BaseLearner):
             self.fix_bcb = True
         else:
             self.fix_bcb = False
-        print('fic_bcb', self.fix_bcb)
+        print('fic_bcb', self.fix_bcb) # False
 
 
         
@@ -78,21 +78,26 @@ class SLCA(BaseLearner):
         self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}'.format(self.seed), head_only=self.fix_bcb)
         self._network.fc.recall()
 
-    def incremental_train(self, data_manager):
-        self._cur_task += 1
-        task_size = data_manager.get_task_size(self._cur_task)
-        self.task_sizes.append(task_size)
-        self._total_classes = self._known_classes + data_manager.get_task_size(self._cur_task)
+    def incremental_train(self, data_manager): # _train() in trainer.py calls this function
+        self._cur_task += 1 # initialized with -1 -> 0
+        print('cur_task', self._cur_task)
+        task_size = data_manager.get_task_size(self._cur_task) # 10
+        print('task_size', task_size) 
+        self.task_sizes.append(task_size) # [10] 
+        print('task_sizes', self.task_sizes)
+        self._total_classes = self._known_classes + data_manager.get_task_size(self._cur_task) # 10
+        print('total_classes', self._total_classes)
         self.topk = self._total_classes if self._total_classes<5 else 5
-        self._network.update_fc(data_manager.get_task_size(self._cur_task))
+        print('topk', self.topk)
+        self._network.update_fc(data_manager.get_task_size(self._cur_task)) # calls update_fc() in inc_net.py in class FinetuneIncrementalNet
         logging.info('Learning on {}-{}'.format(self._known_classes, self._total_classes))
 
         self._network.to(self._device)
 
         train_dset = data_manager.get_dataset(np.arange(self._known_classes, self._total_classes),
                                                   source='train', mode='train',
-                                                  appendent=[], with_raw=False)
-        test_dset = data_manager.get_dataset(np.arange(0, self._total_classes), source='test', mode='test')
+                                                  appendent=[], with_raw=False) #only for the current task
+        test_dset = data_manager.get_dataset(np.arange(0, self._total_classes), source='test', mode='test')   # All previous classes including current classes
         dset_name = data_manager.dataset_name.lower()
 
         self.train_loader = DataLoader(train_dset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
@@ -143,7 +148,7 @@ class SLCA(BaseLearner):
                     self._cur_task, epoch, epochs, losses/len(train_loader))
             logging.info(info)
 
-    def _stage1_training(self, train_loader, test_loader):
+    def _stage1_training(self, train_loader, test_loader): # incremental_train() in this class calls this function
         '''
         if self._cur_task == 0:
             loaded_dict = torch.load('./dict_0.pkl')
@@ -151,6 +156,7 @@ class SLCA(BaseLearner):
             self._network.to(self._device)
             return
         '''
+        print(f"self._ntwork.convnet: {self._network.convnet}")
         base_params = self._network.convnet.parameters()
         base_fc_params = [p for p in self._network.fc.parameters() if p.requires_grad==True]
         head_scale = 1. if 'moco' in self.log_path else 1.
