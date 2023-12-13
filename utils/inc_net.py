@@ -41,7 +41,7 @@ class BaseNet(nn.Module): # FinetuneIncrementalNet in inc_net.py calls this CLAS
     def feature_dim(self):
         return self.convnet.out_dim
 
-    def extract_vector(self, x):
+    def extract_vector(self, x): #Used in  _extract_vectors() in baselearner in base.py
         return self.convnet(x)['features']
 
     def forward(self, x):
@@ -98,7 +98,7 @@ class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
             self.fc = self.generate_fc(self.feature_dim, nb_classes)
             print(f'self.fc: {self.fc}')
         else:
-            self.fc.update(nb_classes, freeze_old=freeze_old)
+            self.fc.update(nb_classes, freeze_old=freeze_old) # Runs for second task onwards
             print(f'self.fc: {self.fc}')
 
     def save_old_fc(self):

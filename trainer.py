@@ -49,13 +49,13 @@ def _train(args): # train() calls this function
     # Upto this point, we dataset, model's backbone (VIT) is set  
     cnn_curve, nme_curve = {'top1': [], 'top5': []}, {'top1': [], 'top5': []}
     for task in range(data_manager.nb_tasks):
-        logging.info('All params: {}'.format(count_parameters(model._network)))
-        logging.info('Trainable params: {}'.format(count_parameters(model._network, True)))
-        model.incremental_train(data_manager)
-        print('All params: {}'.format(count_parameters(model._network)))
-        print('Trainable params: {}'.format(count_parameters(model._network, True)))
+        logging.info('All params: {}'.format(count_parameters(model._network))) #85798656 --> 85806346 --> 
+        logging.info('Trainable params: {}'.format(count_parameters(model._network, True))) #85798656 --> 85806346
+        model.incremental_train(data_manager) #Add layers to the model for the new task
+        print('All params: {}'.format(count_parameters(model._network))) #85806346
+        print('Trainable params: {}'.format(count_parameters(model._network, True))) #85806346
 
-        cnn_accy, nme_accy = model.eval_task()
+        cnn_accy, nme_accy = model.eval_task() #nme accuracy always None
         model.after_task()
         
 

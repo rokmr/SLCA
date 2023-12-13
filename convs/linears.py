@@ -34,7 +34,7 @@ class SimpleContinualLinear(nn.Module): # generate_fc() in inc_net.py calls this
                     nn.init.constant_(m.bias, 0) 
 
 
-    def backup(self):
+    def backup(self): # incremental_train() in class SLCA in slca.py calls this function
         self.old_state_dict = deepcopy(self.state_dict())
 
     def recall(self):

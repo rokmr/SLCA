@@ -28,7 +28,7 @@ class DataManager(object): # _train() in trainer.py calls this class
 
     def get_dataset(self, indices, source, mode, appendent=None, ret_data=False, with_raw=False, with_noise=False): # incremental_train() in slca.py calls this function
         if source == 'train':
-g            x, y = self._train_data, self._train_targets
+            x, y = self._train_data, self._train_targets
         elif source == 'test':
             x, y = self._test_data, self._test_targets
         else:
@@ -56,7 +56,7 @@ g            x, y = self._train_data, self._train_targets
 
         data, targets = np.concatenate(data), np.concatenate(targets)
 
-        if ret_data:
+        if ret_data: #used in _compute_class_mean() in base.py
             return data, targets, DummyDataset(data, targets, trsf, self.use_path, with_raw, with_noise)
         else:
             return DummyDataset(data, targets, trsf, self.use_path, with_raw, with_noise)

@@ -29,7 +29,7 @@ ca_epochs = 5
 class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
     def __init__(self, args):
         super().__init__(args)
-        self._network = FinetuneIncrementalNet(args['convnet_type'], pretrained=True)
+        self._network = FinetuneIncrementalNet(args['convnet_type'], pretrained=True) # Here only we got self._network.convnet
         self.log_path = "logs/{}_{}".format(args['model_name'], args['model_postfix'])
         self.model_prefix = args['prefix']
         if 'epochs' in args.keys():
@@ -72,20 +72,20 @@ class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
         self.seed = args['seed']
         self.task_sizes = []
 
-    def after_task(self):
+    def after_task(self): #Called by _train() in trainer.py
         self._known_classes = self._total_classes
         logging.info('Exemplar size: {}'.format(self.exemplar_size))
         self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}'.format(self.seed), head_only=self.fix_bcb)
-        self._network.fc.recall()
+        self._network.fc.recall() #load old_state_dict
 
     def incremental_train(self, data_manager): # _train() in trainer.py calls this function
-        self._cur_task += 1 # initialized with -1 -> 0
+        self._cur_task += 1 # initialized with -1 -> 0 -> 1 -> 2 
         print('cur_task', self._cur_task)
-        task_size = data_manager.get_task_size(self._cur_task) # 10
+        task_size = data_manager.get_task_size(self._cur_task) # 10 -> 10 -> 10
         print('task_size', task_size) 
-        self.task_sizes.append(task_size) # [10] 
+        self.task_sizes.append(task_size) # [10] -> [10, 10] -> [10, 10, 10]
         print('task_sizes', self.task_sizes)
-        self._total_classes = self._known_classes + data_manager.get_task_size(self._cur_task) # 10
+        self._total_classes = self._known_classes + data_manager.get_task_size(self._cur_task) # 10 -> 20 -> 30
         print('total_classes', self._total_classes)
         self.topk = self._total_classes if self._total_classes<5 else 5
         print('topk', self.topk)
@@ -106,30 +106,34 @@ class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
         self._stage1_training(self.train_loader, self.test_loader)
 
         if len(self._multiple_gpus) > 1:
-            self._network = self._network.module
+            self._network = self._network.module      
 
         # CA
-        self._network.fc.backup()
+        self._network.fc.backup() # creates deep copy : function in linear.py
         if self.save_before_ca:
-            self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}_before_ca'.format(self.seed), head_only=self.fix_bcb)
+            self.save_checkpoint(self.log_path+'/'+self.model_prefix+'_seed{}_before_ca'.format(self.seed), head_only=self.fix_bcb) # function in base.py
         
-        self._compute_class_mean(data_manager, check_diff=False, oracle=False)
-        if self._cur_task>0 and ca_epochs>0:
+        self._compute_class_mean(data_manager, check_diff=False, oracle=False) #In base.py
+        if self._cur_task>0 and ca_epochs>0: # Runs from second task onwards
             self._stage2_compact_classifier(task_size)
             if len(self._multiple_gpus) > 1:
                 self._network = self._network.module
         
 
-    def _run(self, train_loader, test_loader, optimizer, scheduler):
-        run_epochs = epochs
+    def _run(self, train_loader, test_loader, optimizer, scheduler): # _stage1_training() in this class calls this function
+        run_epochs = epochs #2
+        print(f"run_epochs: {run_epochs}")
         for epoch in range(1, run_epochs+1):
             self._network.train()
             losses = 0.
             for i, (_, inputs, targets) in enumerate(train_loader):
                 inputs, targets = inputs.to(self._device), targets.to(self._device)
+                print(f"inputs.shape: {inputs.shape}, targets.shape: {targets.shape}\n") #[128, 3, 224, 224], [128] -> [128, 3, 224, 224], [128] -> [128, 3, 224, 224], [128]
 
-                logits = self._network(inputs, bcb_no_grad=self.fix_bcb)['logits']
-                cur_targets = torch.where(targets-self._known_classes>=0,targets-self._known_classes,-100)
+                logits = self._network(inputs, bcb_no_grad=self.fix_bcb)['logits'] # [128, 10] -> [128, 20] -> [128, 30]
+                print(f"logits.shape: {logits.shape}\n")
+                cur_targets = torch.where(targets-self._known_classes>=0,targets-self._known_classes,-100) #[128] -> [128] -> [128]
+                print(f"cur_targets.shape: {cur_targets.shape}\n")
                 loss = F.cross_entropy(logits[:, self._known_classes:], cur_targets)
 
                 optimizer.zero_grad()
@@ -157,9 +161,10 @@ class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
             return
         '''
         print(f"self._ntwork.convnet: {self._network.convnet}")
-        base_params = self._network.convnet.parameters()
+        base_params = self._network.convnet.parameters()  #convnet is the backbone of the model : vit-b-p16
+        print(f"self._network.fc: {self._network.fc}")
         base_fc_params = [p for p in self._network.fc.parameters() if p.requires_grad==True]
-        head_scale = 1. if 'moco' in self.log_path else 1.
+        head_scale = 1. if 'moco' in self.log_path else 1. #Always 1
         if not self.fix_bcb:
             base_params = {'params': base_params, 'lr': lrate*self.bcb_lrscale, 'weight_decay': weight_decay}
             base_fc_params = {'params': base_fc_params, 'lr': lrate*head_scale, 'weight_decay': weight_decay}
@@ -177,12 +182,12 @@ class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
         self._run(train_loader, test_loader, optimizer, scheduler)
 
 
-    def _stage2_compact_classifier(self, task_size):
+    def _stage2_compact_classifier(self, task_size): # Called after first task # task_size = 10
         for p in self._network.fc.parameters():
             p.requires_grad=True
             
-        run_epochs = ca_epochs
-        crct_num = self._total_classes    
+        run_epochs = ca_epochs            #5
+        crct_num = self._total_classes    #20 
         param_list = [p for p in self._network.fc.parameters() if p.requires_grad]
         network_params = [{'params': param_list, 'lr': lrate,
                            'weight_decay': weight_decay}]
@@ -194,64 +199,72 @@ class SLCA(BaseLearner): # get_model() in factory.py calls this CLASS
         if len(self._multiple_gpus) > 1:
             self._network = nn.DataParallel(self._network, self._multiple_gpus)
 
-        self._network.eval()
-        for epoch in range(run_epochs):
+        self._network.eval() # Only dropout and batchnorm are affected
+        for epoch in range(run_epochs): #5
             losses = 0.
 
             sampled_data = []
             sampled_label = []
             num_sampled_pcls = 256
         
-            for c_id in range(crct_num):
+            for c_id in range(crct_num): #20
                 t_id = c_id//task_size
-                decay = (t_id+1)/(self._cur_task+1)*0.1
+                decay = (t_id+1)/(self._cur_task+1)*0.1 #0.05
                 cls_mean = torch.tensor(self._class_means[c_id], dtype=torch.float64).to(self._device)*(0.9+decay) # torch.from_numpy(self._class_means[c_id]).to(self._device)
                 cls_cov = self._class_covs[c_id].to(self._device)
                 
                 m = MultivariateNormal(cls_mean.float(), cls_cov.float())
 
-                sampled_data_single = m.sample(sample_shape=(num_sampled_pcls,))
+                sampled_data_single = m.sample(sample_shape=(num_sampled_pcls,)) #[256, 768]
+                print(f"sampled_data_single_shape:{sampled_data_single.shape}")
                 sampled_data.append(sampled_data_single)                
                 sampled_label.extend([c_id]*num_sampled_pcls)
 
-            sampled_data = torch.cat(sampled_data, dim=0).float().to(self._device)
-            sampled_label = torch.tensor(sampled_label).long().to(self._device)
+            sampled_data = torch.cat(sampled_data, dim=0).float().to(self._device) #[5120, 768]
+            sampled_label = torch.tensor(sampled_label).long().to(self._device) #[5120]
+            print(f"sampled_data_shape:{sampled_data.shape}, sampled_label_shape:{sampled_label.shape}\n")
 
             inputs = sampled_data
             targets= sampled_label
+            print(f"unique_targets:{torch.unique(targets)}\n")
 
             sf_indexes = torch.randperm(inputs.size(0))
             inputs = inputs[sf_indexes]
             targets = targets[sf_indexes]
 
             
-            for _iter in range(crct_num):
+            for _iter in range(crct_num): #20
                 inp = inputs[_iter*num_sampled_pcls:(_iter+1)*num_sampled_pcls]
-                tgt = targets[_iter*num_sampled_pcls:(_iter+1)*num_sampled_pcls]
+                tgt = targets[_iter*num_sampled_pcls:(_iter+1)*num_sampled_pcls] 
                 outputs = self._network(inp, bcb_no_grad=True, fc_only=True)
                 logits = outputs['logits']
+                print(f"logits.shape: {logits.shape}\n") #[256, 20]
 
-                if self.logit_norm is not None:
+                if self.logit_norm is not None: #0.1
                     per_task_norm = []
                     prev_t_size = 0
                     cur_t_size = 0
-                    for _ti in range(self._cur_task+1):
+                    for _ti in range(self._cur_task+1): #1+1 ->
                         cur_t_size += self.task_sizes[_ti]
-                        temp_norm = torch.norm(logits[:, prev_t_size:cur_t_size], p=2, dim=-1, keepdim=True) + 1e-7
+                        temp_norm = torch.norm(logits[:, prev_t_size:cur_t_size], p=2, dim=-1, keepdim=True) + 1e-7 #[256, 1] : Calculate norm for each task
                         per_task_norm.append(temp_norm)
                         prev_t_size += self.task_sizes[_ti]
-                    per_task_norm = torch.cat(per_task_norm, dim=-1)
-                    norms = per_task_norm.mean(dim=-1, keepdim=True)
+                    per_task_norm = torch.cat(per_task_norm, dim=-1) #[256, 2] ->
+                    print(f"per_task_norm.shape: {per_task_norm.shape}\n") 
+                    norms = per_task_norm.mean(dim=-1, keepdim=True) #[256, 1] -> Calculate mean of norms for per_task_norm along task dimension
+                    print(f"norms.shape: {norms.shape}\n")
                         
-                    norms_all = torch.norm(logits[:, :crct_num], p=2, dim=-1, keepdim=True) + 1e-7
-                    decoupled_logits = torch.div(logits[:, :crct_num], norms) / self.logit_norm
+                    norms_all = torch.norm(logits[:, :crct_num], p=2, dim=-1, keepdim=True) + 1e-7 #Calculate norm for all classes ; [256, 1]
+                    print(f"norms_all.shape: {norms_all.shape}\n")
+                    decoupled_logits = torch.div(logits[:, :crct_num], norms) / self.logit_norm #[256, 20]
+                    print(f"decoupled_logits.shape: {decoupled_logits.shape}\n")
                     loss = F.cross_entropy(decoupled_logits, tgt)
 
                 else:
                     loss = F.cross_entropy(logits[:, :crct_num], tgt)
 
                 optimizer.zero_grad()
-                loss.backward()
+                loss.backward() #Backpropagation for fc layers only
                 optimizer.step()
                 losses += loss.item()
 
