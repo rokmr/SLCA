@@ -27,11 +27,12 @@ def train(args): # main()in main.py calls this function
 
 def _train(args): # train() calls this function
     try:
-        os.mkdir("logs/{}_{}".format(args['model_name'], args['model_postfix']))
+        os.makedirs("logs/{}_{}".format(args['model_name'], args['model_postfix']))
     except:
         pass
-    logfilename = 'logs/{}_{}/{}_{}_{}_{}_{}_{}_{}'.format(args['model_name'], args['model_postfix'], args['prefix'], args['seed'], args['model_name'], args['convnet_type'],
-                                                args['dataset'], args['init_cls'], args['increment'])
+    # logfilename = 'logs/{}_{}/{}_{}_{}_{}_{}_{}_{}'.format(args['model_name'], args['model_postfix'], args['prefix'], args['seed'], args['model_name'], args['convnet_type'],
+    #                                             args['dataset'], args['init_cls'], args['increment'])
+    logfilename = f"logs/{args['model_name']}_{args['model_postfix']}/epoch{args['epochs']}_milestone{args['milestones']}_CA_Lnorm{args['ca_with_logit_norm']}_WtDecay{args['weight_decay']}_lrdecay{args['lr_decay']}_LR{args['lr']}"
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(filename)s] => %(message)s',

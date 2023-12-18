@@ -23,7 +23,7 @@ def load_json(settings_path):
 
 def setup_parser():
     parser = argparse.ArgumentParser(description='Reproduce of multiple continual learning algorthms.')
-    parser.add_argument('--config', type=str, default='./exps/finetune.json',
+    parser.add_argument('--config', type=str, default='/home/gayathri/rohit/SLCA/exps/slca_cifar100-0.8%_buffer500.json',
                         help='Json file of settings.')
     parser.add_argument('--test_only', action='store_true')
     return parser

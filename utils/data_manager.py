@@ -6,6 +6,7 @@ from torchvision import transforms
 from utils.data import iCIFAR10, iCIFAR100, iImageNet100, iImageNet1000, iCIFAR100_224, iImageNetR, iCUB200_224, iResisc45_224, iCARS196_224, iSketch345_224
 from copy import deepcopy
 import random
+from utils.nncsl_functions import init_transform
 
 class DataManager(object): # _train() in trainer.py calls this class
     def __init__(self, dataset_name, shuffle, seed, init_cls, increment):
@@ -17,20 +18,24 @@ class DataManager(object): # _train() in trainer.py calls this class
             self._increments.append(increment)   #Finally self._increments: [10, 10, 10, 10, 10, 10, 10, 10, 10]
         offset = len(self._class_order) - sum(self._increments) #offset: 10
         if offset > 0:
-            self._increments.append(offset) # Now self._increments: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+            self._increments.append(offset) #Now self._increments: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
 
     @property
     def nb_tasks(self):
         return len(self._increments)
+        # return 1                                    # for training on one task only
 
     def get_task_size(self, task): # incremental_train() in slca.py calls this function
         return self._increments[task] 
-
-    def get_dataset(self, indices, source, mode, appendent=None, ret_data=False, with_raw=False, with_noise=False): # incremental_train() in slca.py calls this function
+    
+    # following 3 arguments are added: tasks =self.tasks, task_idx=self._cur_task, buffer_lst = self.buffer_lst
+    def get_dataset(self, indices, source, mode, tasks , task_idx, buffer_lst, appendent=None, ret_data=False, with_raw=False, with_noise=False, keep_file= None, compute_mean = False): # incremental_train() in slca.py calls this function
         if source == 'train':
             x, y = self._train_data, self._train_targets
+            training = True
         elif source == 'test':
             x, y = self._test_data, self._test_targets
+            training = False
         else:
             raise ValueError('Unknown data source {}.'.format(source))
 
@@ -43,19 +48,34 @@ class DataManager(object): # _train() in trainer.py calls this class
         else:
             raise ValueError('Unknown mode {}.'.format(mode))
 
-        data, targets = [], []
-        for idx in indices:
-            class_data, class_targets = self._select(x, y, low_range=idx, high_range=idx+1)
-            data.append(class_data)
-            targets.append(class_targets)
+        # data, targets = [], []
+        # for idx in indices:
+        #     class_data, class_targets = self._select(x, y, low_range=idx, high_range=idx+1)
+        #     data.append(class_data)
+        #     targets.append(class_targets)
 
-        if appendent is not None and len(appendent) != 0:
-            appendent_data, appendent_targets = appendent
-            data.append(appendent_data)
-            targets.append(appendent_targets)
+        # if appendent is not None and len(appendent) != 0:
+        #     appendent_data, appendent_targets = appendent
+        #     data.append(appendent_data)
+        #     targets.append(appendent_targets)
 
-        data, targets = np.concatenate(data), np.concatenate(targets)
+        # data, targets = np.concatenate(data), np.concatenate(targets)
 
+        # x: [50000, 32,32,3] , numpy  ||  y: 50000 , numpy
+        # logging.info(f"indices: {indices} || x.shape: {x.shape} || y.shape: {y.shape}")
+        targets, data = init_transform(y.tolist(), x, keep_file=keep_file, training=training, tasks=tasks, task_idx=task_idx, buffer_lst=buffer_lst) 
+        if compute_mean:
+            data, targets = self._select(data, targets, low_range=indices[0], high_range=indices[0]+1)
+
+            # DATA, TARGETS = [], []
+            # for idx in indices:
+                # class_data, class_targets = self._select(data, targets, low_range=idx, high_range=idx+1)
+                # DATA.append(class_data)
+                # TARGETS.append(class_targets)
+            # logging.info(f"indices: {indices} || x.shape: {np.array(data).shape} || y.shape: {np.array(targets).shape} || TARGETS : {targets}")
+            # logging.info(f"targets: {targets}")
+            # targets, data = np.array(TARGETS), np.array(DATA)
+        # logging.info(f"indices: {indices} || data.shape: {data.shape} || targets.shape: {targets.shape}")
         if ret_data: #used in _compute_class_mean() in base.py
             return data, targets, DummyDataset(data, targets, trsf, self.use_path, with_raw, with_noise)
         else:
@@ -88,6 +108,7 @@ class DataManager(object): # _train() in trainer.py calls this class
             train_targets.append(class_targets[train_indx])
 
         if appendent is not None:
+
             appendent_data, appendent_targets = appendent
             for idx in range(0, int(np.max(appendent_targets))+1):
                 append_data, append_targets = self._select(appendent_data, appendent_targets,
@@ -127,10 +148,10 @@ class DataManager(object): # _train() in trainer.py calls this class
         else:
             order = idata.class_order
         self._class_order = order
-        logging.info(self._class_order)  # seed 1993: [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28, 53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97, 2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7, 63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33]
+        logging.info(self._class_order) 
 
         # Map indices
-        self._train_targets = _map_new_class_index(self._train_targets, self._class_order) #np.array(list(map(lambda x: order.index(x), y)))
+        self._train_targets = _map_new_class_index(self._train_targets, self._class_order) 
         self._test_targets = _map_new_class_index(self._test_targets, self._class_order)
 
     def _select(self, x, y, low_range, high_range): #get_dataset() in DataManager() calls this function
@@ -159,7 +180,16 @@ class DummyDataset(Dataset): #get_dataset() in DataManager() calls this class
                 tindx = [i for i, x in enumerate(self.ori_labels) if x == cls]
                 for i in tindx[:round(len(tindx)*0.2)]:
                     self.labels[i] = random.choice(random_target)
-            
+
+        self.target_indices = []
+        for t in range(100):  #100 due to CIFAR100
+            indices = np.squeeze(np.argwhere(self.labels == t)).tolist()
+            if isinstance(indices, int):
+                indices = [indices]
+            self.target_indices.append(indices)
+        
+        # breakpoint()
+        
 
     def __len__(self):
         return len(self.images)

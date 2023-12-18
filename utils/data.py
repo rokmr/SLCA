@@ -28,7 +28,8 @@ class iCIFAR10(iData):
     def download_data(self):
         train_dataset = datasets.cifar.CIFAR10('./data', train=True, download=True)
         test_dataset = datasets.cifar.CIFAR10('./data', train=False, download=True)
-        self.train_data, self.train_targets = train_dataset.data, np.array(train_dataset.targets)
+        self.train_data, self.train_targets = train_dataset.data, np.array(train_dataset.targets) # Supervised # TODO 
+        self.train_ul_data, self.train_ul_targets = None, None #Unlabeled data Need to work upon
         self.test_data, self.test_targets = test_dataset.data, np.array(test_dataset.targets)
 
 
@@ -51,6 +52,7 @@ class iCIFAR100(iData):
         train_dataset = datasets.cifar.CIFAR100('./data', train=True, download=True)
         test_dataset = datasets.cifar.CIFAR100('./data', train=False, download=True)
         self.train_data, self.train_targets = train_dataset.data, np.array(train_dataset.targets)
+        self.train_ul_data, self.train_ul_targets = None, None #Unlabeled data Need to work upon
         self.test_data, self.test_targets = test_dataset.data, np.array(test_dataset.targets)
 
 class iCIFAR100_224(iCIFAR100): # _get_idata in data_manager.py calla this CLASS
@@ -59,6 +61,7 @@ class iCIFAR100_224(iCIFAR100): # _get_idata in data_manager.py calla this CLASS
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=63/255)
     ]
+
     test_trsf = [
         transforms.Resize(256, interpolation=3),
         transforms.CenterCrop(224),

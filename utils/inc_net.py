@@ -96,10 +96,10 @@ class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
     def update_fc(self, nb_classes, freeze_old=True): # incremental_train() in class SLCA in slca.py calls this function
         if self.fc is None: # self.fc is None for the first task
             self.fc = self.generate_fc(self.feature_dim, nb_classes)
-            print(f'self.fc: {self.fc}')
+            # print(f'self.fc: {self.fc}')
         else:
             self.fc.update(nb_classes, freeze_old=freeze_old) # Runs for second task onwards
-            print(f'self.fc: {self.fc}')
+            # print(f'self.fc: {self.fc}')
 
     def save_old_fc(self):
         if self.old_fc is None:

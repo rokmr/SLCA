@@ -133,7 +133,6 @@ class BaseLearner(object): #Called by SLCA in slca.py
             predicts = torch.max(outputs, dim=1)[1]
             correct += (predicts.cpu() == targets).sum()
             total += len(targets)
-
         return np.around(tensor2numpy(correct)*100 / total, decimals=2)
 
     def _eval_cnn(self, loader): #eval_task() calls this function
@@ -143,7 +142,7 @@ class BaseLearner(object): #Called by SLCA in slca.py
             inputs = inputs.to(self._device)
             with torch.no_grad():
                 outputs = self._network(inputs)['logits']
-            predicts = torch.topk(outputs, k=self.topk, dim=1, largest=True, sorted=True)[1]  # [bs, topk]
+            predicts = torch.topk(outputs, k=self.topk, dim=1, largest=True, sorted=True)[1]  # (topk values , indices of top k)[1]
             y_pred.append(predicts.cpu().numpy())
             y_true.append(targets.cpu().numpy())
 
@@ -163,7 +162,9 @@ class BaseLearner(object): #Called by SLCA in slca.py
     def _extract_vectors(self, loader): #compute_class_mean() calls it
         self._network.eval()
         vectors, targets = [], []
+        # breakpoint()
         for _, _inputs, _targets in loader:
+            # print('inside', _targets)
             _targets = _targets.numpy()
             if isinstance(self._network, nn.DataParallel):
                 _vectors = tensor2numpy(self._network.module.extract_vector(_inputs.to(self._device))) # extract_vector() in inc_net.py calls this function BaseNet Class Gets features fromt 
@@ -227,14 +228,11 @@ class BaseLearner(object): #Called by SLCA in slca.py
             new_class_cov = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim)) #self._class_covs.shape: torch.Size([20, 768, 768])
             new_class_cov[:self._known_classes] = self._class_covs
             self._class_covs = new_class_cov
-        elif not check_diff: #check_diff=False So this will run
+        elif not check_diff: #check_diff=False So this will run : this runs for task 0
             self._class_means = np.zeros((self._total_classes, self.feature_dim)) #self._total_classes=10, feature_dim=768 
-            # self._class_covs = np.zeros((self._total_classes, self.feature_dim, self.feature_dim))
             self._class_covs = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim)) #self._class_covs.shape: torch.Size([10, 768, 768])
 
-            # self._class_covs = []
-
-        if check_diff: #check_diff=False
+        if check_diff: #check_diff=False  #not runs for task 0
             for class_idx in range(0, self._known_classes):
                 data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
                                                                     mode='test', ret_data=True)
@@ -250,14 +248,12 @@ class BaseLearner(object): #Called by SLCA in slca.py
                     np.save('task_{}_cls_{}_mean.npy'.format(self._cur_task, class_idx), class_mean)
                     # print(class_idx, torch.cosine_similarity(torch.tensor(self._class_means[class_idx, :]).unsqueeze(0), torch.tensor(class_mean).unsqueeze(0)))
 
-        if oracle: #oracle=False
+        if oracle: #oracle=False #not runs for task 0
             for class_idx in range(0, self._known_classes):
                 data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
                                                                     mode='test', ret_data=True)
                 idx_loader = DataLoader(idx_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
                 vectors, _ = self._extract_vectors(idx_loader)
-
-                # vectors = np.concatenate([vectors_aug, vectors])
 
                 class_mean = np.mean(vectors, axis=0)
                 # class_cov = np.cov(vectors.T)
@@ -266,35 +262,25 @@ class BaseLearner(object): #Called by SLCA in slca.py
                 self._class_covs[class_idx, ...] = class_cov            
 
         for class_idx in range(self._known_classes, self._total_classes): # 0, 10 -> 10, 20 
-            # data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
-            #                                                       mode='train', ret_data=True)
-            # idx_loader = DataLoader(idx_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
-            # vectors_aug, _ = self._extract_vectors_aug(idx_loader)
-
-            data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
-                                                                  mode='test', ret_data=True)
-            idx_loader = DataLoader(idx_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+            # Paper's code:             data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
+                                                                #   mode='test', ret_data=True)
+            data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',  mode='test', tasks =self.tasks, task_idx=self._cur_task, buffer_lst = self.buffer_lst, ret_data=True, keep_file = self.subset_path, compute_mean=True)
+            idx_loader = DataLoader(idx_dataset, batch_size=batch_size, shuffle=False, num_workers=4) # On changing shuffle= True ->  false No effect
+            # logging.info(f"len_idx_loader: {len(idx_loader.dataset)}")
             vectors, _ = self._extract_vectors(idx_loader) #[500, 768] -> [500, 768] -> [500, 768]
-
-            # vectors = np.concatenate([vectors_aug, vectors])
-
+            # breakpoint()
             class_mean = np.mean(vectors, axis=0) #(768,) -> (768,) -> (768,)
-            print(f'class_mean.shape: {class_mean.shape}, vectors.shape: {vectors.shape}') 
-
-            # class_cov = np.cov(vectors.T)
-            class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)+torch.eye(class_mean.shape[-1])*1e-4 #[768,768] -> [768,768] 
-            print(f'class_cov.shape: {class_cov.shape}') 
+            # logging.info(f"class_mean: {class_mean.shape}")
+            class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)+torch.eye(class_mean.shape[-1])*1e-4 #[768,768] -> [768,768]
+            # logging.info(f"class_cov: {class_cov.shape}") 
 
             if check_diff:
                 log_info = "cls {} sim: {}".format(class_idx, torch.cosine_similarity(torch.tensor(self._class_means[class_idx, :]).unsqueeze(0), torch.tensor(class_mean).unsqueeze(0)).item())
                 logging.info(log_info)
                 np.save('task_{}_cls_{}_mean.npy'.format(self._cur_task, class_idx), class_mean)
                 np.save('task_{}_cls_{}_mean_beforetrain.npy'.format(self._cur_task, class_idx), self._class_means[class_idx, :])
-                # print(class_idx, torch.cosine_similarity(torch.tensor(self._class_means[class_idx, :]).unsqueeze(0), torch.tensor(class_mean).unsqueeze(0)))
             self._class_means[class_idx, :] = class_mean   #self._class_means.shape: (10, 768) -> (20, 768) -> (30, 768)
             self._class_covs[class_idx, ...] = class_cov   #self._class_covs.shape: torch.Size([10, 768, 768]) -> [20, 768, 768] -> [30, 768, 768]
-            print(f'self._class_means.shape: {self._class_means.shape} , self._class_covs.shape: {self._class_covs.shape}')
-            # self._class_covs.append(class_cov)
 
 
     def _construct_exemplar(self, data_manager, m, mode='icarl'):
@@ -320,8 +306,6 @@ class BaseLearner(object): #Called by SLCA in slca.py
 
                     vectors = np.delete(vectors, i, axis=0)  # Remove it to avoid duplicative selection
                     data = np.delete(data, i, axis=0)  # Remove it to avoid duplicative selection
-                # uniques = np.unique(selected_exemplars, axis=0)
-                # print('Unique elements: {}'.format(len(uniques)))
                 selected_exemplars = np.array(selected_exemplars)
                 exemplar_targets = np.full(m, class_idx)
             else:
