@@ -52,36 +52,19 @@ def _train(args): # train() calls this function
         model.incremental_train(data_manager) #Add layers to the model for the new task
         print('All params: {}'.format(count_parameters(model._network))) 
         print('Trainable params: {}'.format(count_parameters(model._network, True))) 
-        cnn_accy, nme_accy = model.eval_task() #nme accuracy always None
+        cnn_accy = model.eval_task() #nme accuracy always None
         model.after_task()
 
-        if nme_accy is not None:
-            logging.info('CNN: {}'.format(cnn_accy['grouped']))
-            logging.info('NME: {}'.format(nme_accy['grouped']))
 
-            cnn_curve['top1'].append(cnn_accy['top1'])
-            cnn_curve['top5'].append(cnn_accy['top5'])
+        logging.info('No NME accuracy.')
+        logging.info('CNN: {}'.format(cnn_accy['grouped']))
 
-            nme_curve['top1'].append(nme_accy['top1'])
-            nme_curve['top5'].append(nme_accy['top5'])
+        cnn_curve['top1'].append(cnn_accy['top1'])
+        cnn_curve['top5'].append(cnn_accy['top5'])
 
-            logging.info('CNN top1 curve: {}'.format(cnn_curve['top1']))
-            logging.info('CNN top1 avg: {}'.format(np.array(cnn_curve['top1']).mean()))
-            if 'task_acc' in cnn_accy.keys():
-                logging.info('Task: {}'.format(cnn_accy['task_acc']))
-            logging.info('CNN top5 curve: {}'.format(cnn_curve['top5']))
-            logging.info('NME top1 curve: {}'.format(nme_curve['top1']))
-            logging.info('NME top5 curve: {}\n'.format(nme_curve['top5']))
-        else:
-            logging.info('No NME accuracy.')
-            logging.info('CNN: {}'.format(cnn_accy['grouped']))
-
-            cnn_curve['top1'].append(cnn_accy['top1'])
-            cnn_curve['top5'].append(cnn_accy['top5'])
-
-            logging.info('CNN top1 curve: {}'.format(cnn_curve['top1']))
-            logging.info('CNN top1 avg: {}'.format(np.array(cnn_curve['top1']).mean()))
-            logging.info('CNN top5 curve: {}\n'.format(cnn_curve['top5']))
+        logging.info('CNN top1 curve: {}'.format(cnn_curve['top1']))
+        logging.info('CNN top1 avg: {}'.format(np.array(cnn_curve['top1']).mean()))
+        logging.info('CNN top5 curve: {}\n'.format(cnn_curve['top5']))
     return (cnn_curve['top1'][-1], np.array(cnn_curve['top1']).mean())
 
 def _set_device(args):
