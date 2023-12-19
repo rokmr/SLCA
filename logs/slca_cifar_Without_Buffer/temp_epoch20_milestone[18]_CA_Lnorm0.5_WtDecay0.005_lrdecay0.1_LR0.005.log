@@ -143,3 +143,8 @@
 2023-12-19 15:12:23,787 [slca.py] => Task 0, Epoch 18/20 => Loss 0.295
 2023-12-19 15:12:25,032 [slca.py] => Task 0, Epoch 19/20 => Loss 0.215
 2023-12-19 15:12:30,026 [slca.py] => Task 0, Epoch 20/20 => Loss 0.298, Train_accy 97.500, Test_accy 83.930
+2023-12-19 15:12:39,950 [slca.py] => CA Task 0 => Loss 0.926, Test_accy 85.270
+2023-12-19 15:12:43,693 [slca.py] => CA Task 0 => Loss 0.847, Test_accy 86.720
+2023-12-19 15:12:47,429 [slca.py] => CA Task 0 => Loss 0.791, Test_accy 88.390
+2023-12-19 15:12:51,116 [slca.py] => CA Task 0 => Loss 0.773, Test_accy 89.060
+2023-12-19 15:12:55,072 [slca.py] => CA Task 0 => Loss 0.767, Test_accy 89.170
