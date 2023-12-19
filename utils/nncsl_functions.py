@@ -29,25 +29,21 @@ buffer_lst = None
 def init_transform(targets, samples, training=True, keep_file=None, tasks=None, task_idx=None, buffer_lst=None): #buffer_lst: None
 
     """ Transforms applied to dataset at the start of training """
-    # tasks = list(range(0, (cur+1)*10))
-    # breakpoint()
     cls_per_task = int(len(tasks) / (task_idx+1))
     cur_cls = tasks[-cls_per_task:]
     new_targets, new_samples = [], []
+    # keep_file = None
     if training and (keep_file is not None):
         assert os.path.exists(keep_file), 'keep file does not exist'
-        # logger.info(f'Using {keep_file}')
         with open(keep_file, 'r') as rfile:
             for line in rfile:
                 indx = int(line.split('\n')[0])
-                # breakpoint()
                 if targets[indx] in cur_cls:
                     new_targets.append(targets[indx])
                     new_samples.append(samples[indx])
                 elif buffer_lst is not None and indx in buffer_lst:
                     new_targets.append(targets[indx])
                     new_samples.append(samples[indx])
-
     else:
         if tasks is not None:
             for s, t in zip(samples, targets):

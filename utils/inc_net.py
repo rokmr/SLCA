@@ -33,7 +33,6 @@ class BaseNet(nn.Module): # FinetuneIncrementalNet in inc_net.py calls this CLAS
 
     def __init__(self, convnet_type, pretrained):
         super(BaseNet, self).__init__()
-
         self.convnet = get_convnet(convnet_type, pretrained)
         self.fc = None
 
@@ -71,16 +70,13 @@ class BaseNet(nn.Module): # FinetuneIncrementalNet in inc_net.py calls this CLAS
         for param in self.parameters():
             param.requires_grad = False
         self.eval()
-
         return self
 
 class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
-
     def __init__(self, convnet_type, pretrained, fc_with_ln=False):
         super().__init__(convnet_type, pretrained)
         self.old_fc = None
         self.fc_with_ln = fc_with_ln
-
 
     def extract_layerwise_vector(self, x, pool=True):
         with torch.no_grad():
@@ -96,10 +92,8 @@ class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
     def update_fc(self, nb_classes, freeze_old=True): # incremental_train() in class SLCA in slca.py calls this function
         if self.fc is None: # self.fc is None for the first task
             self.fc = self.generate_fc(self.feature_dim, nb_classes)
-            # print(f'self.fc: {self.fc}')
         else:
             self.fc.update(nb_classes, freeze_old=freeze_old) # Runs for second task onwards
-            # print(f'self.fc: {self.fc}')
 
     def save_old_fc(self):
         if self.old_fc is None:
@@ -109,7 +103,6 @@ class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
 
     def generate_fc(self, in_dim, out_dim): #update_fc() in this class calls this function for the first task
         fc = SimpleContinualLinear(in_dim, out_dim)
-
         return fc
 
     def forward(self, x, bcb_no_grad=False, fc_only=False):
@@ -126,7 +119,6 @@ class FinetuneIncrementalNet(BaseNet): # SLCA in slca.py calls this CLASS
             x = self.convnet(x)
         out = self.fc(x['features'])
         out.update(x)
-
         return out
 
 

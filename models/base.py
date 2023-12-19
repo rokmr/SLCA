@@ -10,7 +10,6 @@ from scipy.spatial.distance import cdist
 EPSILON = 1e-8
 batch_size = 64
 
-
 class BaseLearner(object): #Called by SLCA in slca.py
     def __init__(self, args):
         self._cur_task = -1
@@ -21,9 +20,9 @@ class BaseLearner(object): #Called by SLCA in slca.py
         self._data_memory, self._targets_memory = np.array([]), np.array([])
         self.topk = 5
 
-        self._memory_size = args['memory_size']
-        self._memory_per_class = args['memory_per_class']
-        self._fixed_memory = args['fixed_memory']
+        # self._memory_size = args['memory_size']
+        # # self._memory_per_class = args['memory_per_class']
+        # self._fixed_memory = args['fixed_memory']
         self._device = args['device'][0]
         self._multiple_gpus = args['device']
 
@@ -32,13 +31,13 @@ class BaseLearner(object): #Called by SLCA in slca.py
         assert len(self._data_memory) == len(self._targets_memory), 'Exemplar size error.'
         return len(self._targets_memory)
 
-    @property
-    def samples_per_class(self):
-        if self._fixed_memory:
-            return self._memory_per_class
-        else:
-            assert self._total_classes != 0, 'Total classes is 0'
-            return (self._memory_size // self._total_classes)
+    # @property
+    # def samples_per_class(self):
+    #     if self._fixed_memory:
+    #         return self._memory_per_class
+    #     else:
+    #         assert self._total_classes != 0, 'Total classes is 0'
+    #         return (self._memory_size // self._total_classes)
 
     @property
     def feature_dim(self):
@@ -47,12 +46,12 @@ class BaseLearner(object): #Called by SLCA in slca.py
         else:
             return self._network.feature_dim
 
-    def build_rehearsal_memory(self, data_manager, per_class, mode='icarl'):
-        if self._fixed_memory:
-            self._construct_exemplar_unified(data_manager, per_class)
-        else:
-            self._reduce_exemplar(data_manager, per_class)
-            self._construct_exemplar(data_manager, per_class, mode=mode)
+    # def build_rehearsal_memory(self, data_manager, per_class, mode='icarl'):
+    #     if self._fixed_memory:
+    #         self._construct_exemplar_unified(data_manager, per_class)
+    #     else:
+    #         self._reduce_exemplar(data_manager, per_class)
+    #         self._construct_exemplar(data_manager, per_class, mode=mode)
 
     def save_checkpoint(self, filename, head_only=False): #Called by SLCA incremental_train.py in slca.py
         if hasattr(self._network, 'module'):
@@ -79,20 +78,12 @@ class BaseLearner(object): #Called by SLCA in slca.py
         ret['top1'] = grouped['total']
         ret['top{}'.format(5)] = np.around((y_pred.T == np.tile(y_true, (self.topk, 1))).sum()*100/len(y_true),
                                                    decimals=2)
-
         return ret
 
     def eval_task(self): #_train() in trainer.py calls this function
         y_pred, y_true = self._eval_cnn(self.test_loader)
         cnn_accy = self._evaluate(y_pred, y_true)
-
-        if hasattr(self, '_class_means') and False: # TODO
-            y_pred, y_true = self._eval_nme(self.test_loader, self._class_means)
-            nme_accy = self._evaluate(y_pred, y_true)
-        else:
-            nme_accy = None
-
-        return cnn_accy, nme_accy
+        return cnn_accy
 
     def incremental_train(self):
         pass
@@ -162,10 +153,9 @@ class BaseLearner(object): #Called by SLCA in slca.py
     def _extract_vectors(self, loader): #compute_class_mean() calls it
         self._network.eval()
         vectors, targets = [], []
-        # breakpoint()
         for _, _inputs, _targets in loader:
-            # print('inside', _targets)
             _targets = _targets.numpy()
+
             if isinstance(self._network, nn.DataParallel):
                 _vectors = tensor2numpy(self._network.module.extract_vector(_inputs.to(self._device))) # extract_vector() in inc_net.py calls this function BaseNet Class Gets features fromt 
             else:
@@ -215,8 +205,6 @@ class BaseLearner(object): #Called by SLCA in slca.py
 
             self._class_means[class_idx, :] = mean
             
-
-
     def _compute_class_mean(self, data_manager, check_diff=False, oracle=False): # Called by incremental_train() in SLCA in slca.py
         if hasattr(self, '_class_means') and self._class_means is not None and not check_diff: #initailly no class_means but after first class we have class mean for previous class
             ori_classes = self._class_means.shape[0]
@@ -228,6 +216,7 @@ class BaseLearner(object): #Called by SLCA in slca.py
             new_class_cov = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim)) #self._class_covs.shape: torch.Size([20, 768, 768])
             new_class_cov[:self._known_classes] = self._class_covs
             self._class_covs = new_class_cov
+
         elif not check_diff: #check_diff=False So this will run : this runs for task 0
             self._class_means = np.zeros((self._total_classes, self.feature_dim)) #self._total_classes=10, feature_dim=768 
             self._class_covs = torch.zeros((self._total_classes, self.feature_dim, self.feature_dim)) #self._class_covs.shape: torch.Size([10, 768, 768])
@@ -237,16 +226,13 @@ class BaseLearner(object): #Called by SLCA in slca.py
                 data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
                                                                     mode='test', ret_data=True)
                 idx_loader = DataLoader(idx_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
-                # vectors, _ = self._extract_vectors_aug(idx_loader)
                 vectors, _ = self._extract_vectors(idx_loader)    #vectors, targets : vectors are features from the ViT backbone, targets are the labels
                 class_mean = np.mean(vectors, axis=0)
-                # class_cov = np.cov(vectors.T)
                 class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)
                 if check_diff:
                     log_info = "cls {} sim: {}".format(class_idx, torch.cosine_similarity(torch.tensor(self._class_means[class_idx, :]).unsqueeze(0), torch.tensor(class_mean).unsqueeze(0)).item())
                     logging.info(log_info)
                     np.save('task_{}_cls_{}_mean.npy'.format(self._cur_task, class_idx), class_mean)
-                    # print(class_idx, torch.cosine_similarity(torch.tensor(self._class_means[class_idx, :]).unsqueeze(0), torch.tensor(class_mean).unsqueeze(0)))
 
         if oracle: #oracle=False #not runs for task 0
             for class_idx in range(0, self._known_classes):
@@ -256,23 +242,16 @@ class BaseLearner(object): #Called by SLCA in slca.py
                 vectors, _ = self._extract_vectors(idx_loader)
 
                 class_mean = np.mean(vectors, axis=0)
-                # class_cov = np.cov(vectors.T)
                 class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)+torch.eye(class_mean.shape[-1])*1e-5
                 self._class_means[class_idx, :] = class_mean
                 self._class_covs[class_idx, ...] = class_cov            
 
         for class_idx in range(self._known_classes, self._total_classes): # 0, 10 -> 10, 20 
-            # Paper's code:             data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',
-                                                                #   mode='test', ret_data=True)
             data, targets, idx_dataset = data_manager.get_dataset(np.arange(class_idx, class_idx+1), source='train',  mode='test', tasks =self.tasks, task_idx=self._cur_task, buffer_lst = self.buffer_lst, ret_data=True, keep_file = self.subset_path, compute_mean=True)
             idx_loader = DataLoader(idx_dataset, batch_size=batch_size, shuffle=False, num_workers=4) # On changing shuffle= True ->  false No effect
-            # logging.info(f"len_idx_loader: {len(idx_loader.dataset)}")
             vectors, _ = self._extract_vectors(idx_loader) #[500, 768] -> [500, 768] -> [500, 768]
-            # breakpoint()
             class_mean = np.mean(vectors, axis=0) #(768,) -> (768,) -> (768,)
-            # logging.info(f"class_mean: {class_mean.shape}")
             class_cov = torch.cov(torch.tensor(vectors, dtype=torch.float64).T)+torch.eye(class_mean.shape[-1])*1e-4 #[768,768] -> [768,768]
-            # logging.info(f"class_cov: {class_cov.shape}") 
 
             if check_diff:
                 log_info = "cls {} sim: {}".format(class_idx, torch.cosine_similarity(torch.tensor(self._class_means[class_idx, :]).unsqueeze(0), torch.tensor(class_mean).unsqueeze(0)).item())

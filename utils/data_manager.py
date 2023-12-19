@@ -19,6 +19,7 @@ class DataManager(object): # _train() in trainer.py calls this class
         offset = len(self._class_order) - sum(self._increments) #offset: 10
         if offset > 0:
             self._increments.append(offset) #Now self._increments: [10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+        # self.num_classes = len(self._class_order) 
 
     @property
     def nb_tasks(self):
@@ -54,28 +55,13 @@ class DataManager(object): # _train() in trainer.py calls this class
         #     data.append(class_data)
         #     targets.append(class_targets)
 
-        # if appendent is not None and len(appendent) != 0:
-        #     appendent_data, appendent_targets = appendent
-        #     data.append(appendent_data)
-        #     targets.append(appendent_targets)
-
         # data, targets = np.concatenate(data), np.concatenate(targets)
 
         # x: [50000, 32,32,3] , numpy  ||  y: 50000 , numpy
-        # logging.info(f"indices: {indices} || x.shape: {x.shape} || y.shape: {y.shape}")
         targets, data = init_transform(y.tolist(), x, keep_file=keep_file, training=training, tasks=tasks, task_idx=task_idx, buffer_lst=buffer_lst) 
         if compute_mean:
             data, targets = self._select(data, targets, low_range=indices[0], high_range=indices[0]+1)
 
-            # DATA, TARGETS = [], []
-            # for idx in indices:
-                # class_data, class_targets = self._select(data, targets, low_range=idx, high_range=idx+1)
-                # DATA.append(class_data)
-                # TARGETS.append(class_targets)
-            # logging.info(f"indices: {indices} || x.shape: {np.array(data).shape} || y.shape: {np.array(targets).shape} || TARGETS : {targets}")
-            # logging.info(f"targets: {targets}")
-            # targets, data = np.array(TARGETS), np.array(DATA)
-        # logging.info(f"indices: {indices} || data.shape: {data.shape} || targets.shape: {targets.shape}")
         if ret_data: #used in _compute_class_mean() in base.py
             return data, targets, DummyDataset(data, targets, trsf, self.use_path, with_raw, with_noise)
         else:
@@ -188,9 +174,6 @@ class DummyDataset(Dataset): #get_dataset() in DataManager() calls this class
                 indices = [indices]
             self.target_indices.append(indices)
         
-        # breakpoint()
-        
-
     def __len__(self):
         return len(self.images)
 
@@ -206,10 +189,8 @@ class DummyDataset(Dataset): #get_dataset() in DataManager() calls this class
             return idx, image, label, self.raw_trsf(load_image) 
         return idx, image, label
 
-
 def _map_new_class_index(y, order): # _setup_data() calls this function
     return np.array(list(map(lambda x: order.index(x), y)))
-
 
 def _get_idata(dataset_name): # _setup_data() in DataManager() calls this function
     name = dataset_name.lower()
@@ -236,7 +217,6 @@ def _get_idata(dataset_name): # _setup_data() in DataManager() calls this functi
     else:
         raise NotImplementedError('Unknown dataset {}.'.format(dataset_name))
 
-
 def pil_loader(path):
     '''
     Ref:
@@ -261,7 +241,6 @@ def accimage_loader(path):
     except IOError:
         # Potentially a decoding problem, fall back to PIL.Image
         return pil_loader(path)
-
 
 def default_loader(path):
     '''

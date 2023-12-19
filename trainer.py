@@ -22,17 +22,14 @@ def train(args): # main()in main.py calls this function
         res_avgs.append(res_avg)
     logging.info('final accs: {}'.format(res_finals))
     logging.info('avg accs: {}'.format(res_avgs))
-        
-
 
 def _train(args): # train() calls this function
     try:
         os.makedirs("logs/{}_{}".format(args['model_name'], args['model_postfix']))
     except:
         pass
-    # logfilename = 'logs/{}_{}/{}_{}_{}_{}_{}_{}_{}'.format(args['model_name'], args['model_postfix'], args['prefix'], args['seed'], args['model_name'], args['convnet_type'],
-    #                                             args['dataset'], args['init_cls'], args['increment'])
-    logfilename = f"logs/{args['model_name']}_{args['model_postfix']}/epoch{args['epochs']}_milestone{args['milestones']}_CA_Lnorm{args['ca_with_logit_norm']}_WtDecay{args['weight_decay']}_lrdecay{args['lr_decay']}_LR{args['lr']}"
+    
+    logfilename = f"logs/{args['model_name']}_{args['model_postfix']}/temp_epoch{args['epochs']}_milestone{args['milestones']}_CA_Lnorm{args['ca_with_logit_norm']}_WtDecay{args['weight_decay']}_lrdecay{args['lr_decay']}_LR{args['lr']}"
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(filename)s] => %(message)s',
@@ -50,15 +47,13 @@ def _train(args): # train() calls this function
     # Upto this point, we dataset, model's backbone (VIT) is set  
     cnn_curve, nme_curve = {'top1': [], 'top5': []}, {'top1': [], 'top5': []}
     for task in range(data_manager.nb_tasks):
-        logging.info('All params: {}'.format(count_parameters(model._network))) #85798656 --> 85806346 --> 
-        logging.info('Trainable params: {}'.format(count_parameters(model._network, True))) #85798656 --> 85806346
+        logging.info('All params: {}'.format(count_parameters(model._network))) 
+        logging.info('Trainable params: {}'.format(count_parameters(model._network, True))) 
         model.incremental_train(data_manager) #Add layers to the model for the new task
-        print('All params: {}'.format(count_parameters(model._network))) #85806346
-        print('Trainable params: {}'.format(count_parameters(model._network, True))) #85806346
-
+        print('All params: {}'.format(count_parameters(model._network))) 
+        print('Trainable params: {}'.format(count_parameters(model._network, True))) 
         cnn_accy, nme_accy = model.eval_task() #nme accuracy always None
         model.after_task()
-        
 
         if nme_accy is not None:
             logging.info('CNN: {}'.format(cnn_accy['grouped']))
@@ -87,21 +82,17 @@ def _train(args): # train() calls this function
             logging.info('CNN top1 curve: {}'.format(cnn_curve['top1']))
             logging.info('CNN top1 avg: {}'.format(np.array(cnn_curve['top1']).mean()))
             logging.info('CNN top5 curve: {}\n'.format(cnn_curve['top5']))
-
     return (cnn_curve['top1'][-1], np.array(cnn_curve['top1']).mean())
 
 def _set_device(args):
-    device_type = args['device']
+    device_type = args['device'] # ["0","1"]
     gpus = []
-
     for device in device_type:
         if device_type == -1:
             device = torch.device('cpu')
         else:
             device = torch.device('cuda:{}'.format(device))
-
         gpus.append(device)
-
     args['device'] = gpus
 
 
@@ -111,7 +102,6 @@ def _set_random():
     torch.cuda.manual_seed_all(1)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
-
 
 def print_args(args): #_train() calls this function
     for key, value in args.items():
