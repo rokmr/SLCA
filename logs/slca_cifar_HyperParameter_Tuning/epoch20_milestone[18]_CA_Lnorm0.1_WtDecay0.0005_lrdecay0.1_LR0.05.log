@@ -1,0 +1,383 @@
+2023-12-19 05:48:10,252 [trainer.py] => config: exps/slca_cifar100-0.8%_buffer500.json
+2023-12-19 05:48:10,252 [trainer.py] => test_only: False
+2023-12-19 05:48:10,252 [trainer.py] => prefix: reproduce
+2023-12-19 05:48:10,252 [trainer.py] => dataset: cifar100_224
+2023-12-19 05:48:10,252 [trainer.py] => memory_size: 0
+2023-12-19 05:48:10,252 [trainer.py] => memory_per_class: 0
+2023-12-19 05:48:10,252 [trainer.py] => fixed_memory: False
+2023-12-19 05:48:10,252 [trainer.py] => shuffle: False
+2023-12-19 05:48:10,252 [trainer.py] => init_cls: 10
+2023-12-19 05:48:10,252 [trainer.py] => increment: 10
+2023-12-19 05:48:10,252 [trainer.py] => model_name: slca_cifar
+2023-12-19 05:48:10,252 [trainer.py] => model_postfix: HyperParameter_Tuning
+2023-12-19 05:48:10,252 [trainer.py] => convnet_type: vit-b-p16
+2023-12-19 05:48:10,252 [trainer.py] => device: [device(type='cuda', index=0), device(type='cuda', index=1), device(type='cuda', index=2)]
+2023-12-19 05:48:10,252 [trainer.py] => seed: 0
+2023-12-19 05:48:10,253 [trainer.py] => epochs: 20
+2023-12-19 05:48:10,253 [trainer.py] => ca_epochs: 5
+2023-12-19 05:48:10,253 [trainer.py] => ca_with_logit_norm: 0.1
+2023-12-19 05:48:10,253 [trainer.py] => milestones: [18]
+2023-12-19 05:48:10,253 [trainer.py] => lr: 0.05
+2023-12-19 05:48:10,253 [trainer.py] => lr_decay: 0.1
+2023-12-19 05:48:10,253 [trainer.py] => weight_decay: 0.0005
+2023-12-19 05:48:10,253 [trainer.py] => u_batch_size: 256
+2023-12-19 05:48:10,253 [trainer.py] => s_batch_size: 3
+2023-12-19 05:48:10,253 [trainer.py] => multicrop: 2
+2023-12-19 05:48:10,253 [trainer.py] => us_multicrop: 2
+2023-12-19 05:48:10,253 [trainer.py] => subset_path: ./subsets/cifar100/0.8%_seed0.txt
+2023-12-19 05:48:10,253 [trainer.py] => subset_path_cls: ./subsets/cifar100/0.8%_seed0_cls.txt
+2023-12-19 05:48:10,253 [trainer.py] => buffer_size: 500
+2023-12-19 05:48:10,253 [trainer.py] => run_id: 0
+2023-12-19 05:48:11,823 [data_manager.py] => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+2023-12-19 05:48:13,697 [trainer.py] => All params: 85798656
+2023-12-19 05:48:13,698 [trainer.py] => Trainable params: 85798656
+2023-12-19 05:48:13,699 [slca.py] => Learning on 0-10
+2023-12-19 05:48:27,831 [slca.py] => Task 0, Epoch 1/20 => Loss 2.357
+2023-12-19 05:48:29,025 [slca.py] => Task 0, Epoch 2/20 => Loss 1.865
+2023-12-19 05:48:30,080 [slca.py] => Task 0, Epoch 3/20 => Loss 1.242
+2023-12-19 05:48:31,331 [slca.py] => Task 0, Epoch 4/20 => Loss 0.512
+2023-12-19 05:48:36,360 [slca.py] => Task 0, Epoch 5/20 => Loss 0.447, Train_accy 92.500, Test_accy 84.150
+2023-12-19 05:48:37,578 [slca.py] => Task 0, Epoch 6/20 => Loss 0.157
+2023-12-19 05:48:38,716 [slca.py] => Task 0, Epoch 7/20 => Loss 0.099
+2023-12-19 05:48:39,903 [slca.py] => Task 0, Epoch 8/20 => Loss 0.201
+2023-12-19 05:48:41,065 [slca.py] => Task 0, Epoch 9/20 => Loss 0.223
+2023-12-19 05:48:45,965 [slca.py] => Task 0, Epoch 10/20 => Loss 0.171, Train_accy 95.000, Test_accy 90.070
+2023-12-19 05:48:47,105 [slca.py] => Task 0, Epoch 11/20 => Loss 0.176
+2023-12-19 05:48:48,202 [slca.py] => Task 0, Epoch 12/20 => Loss 0.139
+2023-12-19 05:48:49,403 [slca.py] => Task 0, Epoch 13/20 => Loss 0.123
+2023-12-19 05:48:50,507 [slca.py] => Task 0, Epoch 14/20 => Loss 0.393
+2023-12-19 05:48:55,573 [slca.py] => Task 0, Epoch 15/20 => Loss 0.049, Train_accy 95.000, Test_accy 85.940
+2023-12-19 05:48:56,780 [slca.py] => Task 0, Epoch 16/20 => Loss 0.128
+2023-12-19 05:48:57,893 [slca.py] => Task 0, Epoch 17/20 => Loss 0.358
+2023-12-19 05:48:59,097 [slca.py] => Task 0, Epoch 18/20 => Loss 0.220
+2023-12-19 05:49:00,271 [slca.py] => Task 0, Epoch 19/20 => Loss 0.011
+2023-12-19 05:49:05,267 [slca.py] => Task 0, Epoch 20/20 => Loss 0.195, Train_accy 92.500, Test_accy 86.610
+2023-12-19 05:49:15,058 [slca.py] => CA Task 0 => Loss 0.013, Test_accy 86.830
+2023-12-19 05:49:19,540 [slca.py] => CA Task 0 => Loss 0.005, Test_accy 86.270
+2023-12-19 05:49:24,017 [slca.py] => CA Task 0 => Loss 0.004, Test_accy 86.610
+2023-12-19 05:49:28,494 [slca.py] => CA Task 0 => Loss 0.003, Test_accy 86.720
+2023-12-19 05:49:32,983 [slca.py] => CA Task 0 => Loss 0.003, Test_accy 86.830
+2023-12-19 05:49:35,772 [slca.py] => Exemplar size: 0
+2023-12-19 05:49:36,561 [trainer.py] => No NME accuracy.
+2023-12-19 05:49:36,562 [trainer.py] => CNN: {'total': 86.83, '00-09': 86.83, 'old': 0, 'new': 86.83}
+2023-12-19 05:49:36,562 [trainer.py] => CNN top1 curve: [86.83]
+2023-12-19 05:49:36,562 [trainer.py] => CNN top1 avg: 86.83
+2023-12-19 05:49:36,562 [trainer.py] => CNN top5 curve: [99.22]
+
+2023-12-19 05:49:36,562 [trainer.py] => All params: 85806346
+2023-12-19 05:49:36,563 [trainer.py] => Trainable params: 85806346
+2023-12-19 05:49:36,563 [slca.py] => Learning on 10-20
+2023-12-19 05:49:38,001 [slca.py] => Task 1, Epoch 1/20 => Loss 2.295
+2023-12-19 05:49:39,336 [slca.py] => Task 1, Epoch 2/20 => Loss 1.850
+2023-12-19 05:49:40,613 [slca.py] => Task 1, Epoch 3/20 => Loss 0.902
+2023-12-19 05:49:41,999 [slca.py] => Task 1, Epoch 4/20 => Loss 0.554
+2023-12-19 05:49:49,145 [slca.py] => Task 1, Epoch 5/20 => Loss 0.281, Train_accy 77.500, Test_accy 59.220
+2023-12-19 05:49:50,511 [slca.py] => Task 1, Epoch 6/20 => Loss 0.115
+2023-12-19 05:49:51,848 [slca.py] => Task 1, Epoch 7/20 => Loss 0.046
+2023-12-19 05:49:53,121 [slca.py] => Task 1, Epoch 8/20 => Loss 0.125
+2023-12-19 05:49:54,473 [slca.py] => Task 1, Epoch 9/20 => Loss 0.150
+2023-12-19 05:50:01,646 [slca.py] => Task 1, Epoch 10/20 => Loss 0.044, Train_accy 97.500, Test_accy 76.300
+2023-12-19 05:50:03,032 [slca.py] => Task 1, Epoch 11/20 => Loss 0.023
+2023-12-19 05:50:04,532 [slca.py] => Task 1, Epoch 12/20 => Loss 0.199
+2023-12-19 05:50:05,991 [slca.py] => Task 1, Epoch 13/20 => Loss 0.001
+2023-12-19 05:50:07,418 [slca.py] => Task 1, Epoch 14/20 => Loss 0.037
+2023-12-19 05:50:14,671 [slca.py] => Task 1, Epoch 15/20 => Loss 0.090, Train_accy 100.000, Test_accy 79.220
+2023-12-19 05:50:15,973 [slca.py] => Task 1, Epoch 16/20 => Loss 0.089
+2023-12-19 05:50:17,390 [slca.py] => Task 1, Epoch 17/20 => Loss 0.034
+2023-12-19 05:50:18,783 [slca.py] => Task 1, Epoch 18/20 => Loss 0.097
+2023-12-19 05:50:20,223 [slca.py] => Task 1, Epoch 19/20 => Loss 0.059
+2023-12-19 05:50:27,512 [slca.py] => Task 1, Epoch 20/20 => Loss 0.104, Train_accy 95.000, Test_accy 78.280
+2023-12-19 05:50:40,924 [slca.py] => CA Task 1 => Loss 0.018, Test_accy 78.070
+2023-12-19 05:50:49,079 [slca.py] => CA Task 1 => Loss 0.003, Test_accy 78.280
+2023-12-19 05:50:57,200 [slca.py] => CA Task 1 => Loss 0.002, Test_accy 78.750
+2023-12-19 05:51:05,305 [slca.py] => CA Task 1 => Loss 0.001, Test_accy 78.910
+2023-12-19 05:51:13,385 [slca.py] => CA Task 1 => Loss 0.001, Test_accy 78.960
+2023-12-19 05:51:18,217 [slca.py] => Exemplar size: 0
+2023-12-19 05:51:18,934 [trainer.py] => No NME accuracy.
+2023-12-19 05:51:18,934 [trainer.py] => CNN: {'total': 78.96, '00-09': 85.83, '10-19': 72.08, 'old': 85.83, 'new': 72.08}
+2023-12-19 05:51:18,934 [trainer.py] => CNN top1 curve: [86.83, 78.96]
+2023-12-19 05:51:18,935 [trainer.py] => CNN top1 avg: 82.895
+2023-12-19 05:51:18,935 [trainer.py] => CNN top5 curve: [99.22, 97.34]
+
+2023-12-19 05:51:18,935 [trainer.py] => All params: 85814036
+2023-12-19 05:51:18,936 [trainer.py] => Trainable params: 85814036
+2023-12-19 05:51:18,936 [slca.py] => Learning on 20-30
+2023-12-19 05:51:20,599 [slca.py] => Task 2, Epoch 1/20 => Loss 2.321
+2023-12-19 05:51:22,080 [slca.py] => Task 2, Epoch 2/20 => Loss 1.522
+2023-12-19 05:51:23,669 [slca.py] => Task 2, Epoch 3/20 => Loss 0.634
+2023-12-19 05:51:25,179 [slca.py] => Task 2, Epoch 4/20 => Loss 0.373
+2023-12-19 05:51:34,614 [slca.py] => Task 2, Epoch 5/20 => Loss 0.198, Train_accy 82.500, Test_accy 62.230
+2023-12-19 05:51:36,106 [slca.py] => Task 2, Epoch 6/20 => Loss 0.137
+2023-12-19 05:51:37,625 [slca.py] => Task 2, Epoch 7/20 => Loss 0.040
+2023-12-19 05:51:39,225 [slca.py] => Task 2, Epoch 8/20 => Loss 0.073
+2023-12-19 05:51:40,748 [slca.py] => Task 2, Epoch 9/20 => Loss 0.096
+2023-12-19 05:51:50,239 [slca.py] => Task 2, Epoch 10/20 => Loss 0.168, Train_accy 92.500, Test_accy 75.310
+2023-12-19 05:51:51,821 [slca.py] => Task 2, Epoch 11/20 => Loss 0.009
+2023-12-19 05:51:53,361 [slca.py] => Task 2, Epoch 12/20 => Loss 0.001
+2023-12-19 05:51:54,886 [slca.py] => Task 2, Epoch 13/20 => Loss 0.004
+2023-12-19 05:51:56,456 [slca.py] => Task 2, Epoch 14/20 => Loss 0.060
+2023-12-19 05:52:05,881 [slca.py] => Task 2, Epoch 15/20 => Loss 0.412, Train_accy 94.170, Test_accy 76.050
+2023-12-19 05:52:07,491 [slca.py] => Task 2, Epoch 16/20 => Loss 0.004
+2023-12-19 05:52:08,979 [slca.py] => Task 2, Epoch 17/20 => Loss 0.281
+2023-12-19 05:52:10,436 [slca.py] => Task 2, Epoch 18/20 => Loss 0.105
+2023-12-19 05:52:11,885 [slca.py] => Task 2, Epoch 19/20 => Loss 0.219
+2023-12-19 05:52:21,382 [slca.py] => Task 2, Epoch 20/20 => Loss 0.034, Train_accy 94.170, Test_accy 74.520
+2023-12-19 05:52:38,233 [slca.py] => CA Task 2 => Loss 0.019, Test_accy 76.190
+2023-12-19 05:52:49,928 [slca.py] => CA Task 2 => Loss 0.004, Test_accy 76.660
+2023-12-19 05:53:01,583 [slca.py] => CA Task 2 => Loss 0.003, Test_accy 77.210
+2023-12-19 05:53:13,226 [slca.py] => CA Task 2 => Loss 0.002, Test_accy 77.550
+2023-12-19 05:53:24,926 [slca.py] => CA Task 2 => Loss 0.002, Test_accy 77.510
+2023-12-19 05:53:31,801 [slca.py] => Exemplar size: 0
+2023-12-19 05:53:32,559 [trainer.py] => No NME accuracy.
+2023-12-19 05:53:32,559 [trainer.py] => CNN: {'total': 77.51, '00-09': 78.73, '10-19': 70.09, '20-29': 83.72, 'old': 74.4, 'new': 83.72}
+2023-12-19 05:53:32,559 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51]
+2023-12-19 05:53:32,559 [trainer.py] => CNN top1 avg: 81.10000000000001
+2023-12-19 05:53:32,560 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5]
+
+2023-12-19 05:53:32,560 [trainer.py] => All params: 85821726
+2023-12-19 05:53:32,560 [trainer.py] => Trainable params: 85821726
+2023-12-19 05:53:32,561 [slca.py] => Learning on 30-40
+2023-12-19 05:53:34,440 [slca.py] => Task 3, Epoch 1/20 => Loss 2.464
+2023-12-19 05:53:36,309 [slca.py] => Task 3, Epoch 2/20 => Loss 1.299
+2023-12-19 05:53:38,093 [slca.py] => Task 3, Epoch 3/20 => Loss 0.317
+2023-12-19 05:53:39,977 [slca.py] => Task 3, Epoch 4/20 => Loss 0.699
+2023-12-19 05:53:52,079 [slca.py] => Task 3, Epoch 5/20 => Loss 0.188, Train_accy 85.000, Test_accy 70.390
+2023-12-19 05:53:53,957 [slca.py] => Task 3, Epoch 6/20 => Loss 0.113
+2023-12-19 05:53:55,879 [slca.py] => Task 3, Epoch 7/20 => Loss 1.660
+2023-12-19 05:53:57,739 [slca.py] => Task 3, Epoch 8/20 => Loss 2.673
+2023-12-19 05:53:59,533 [slca.py] => Task 3, Epoch 9/20 => Loss 3.041
+2023-12-19 05:54:11,365 [slca.py] => Task 3, Epoch 10/20 => Loss 2.425, Train_accy 45.620, Test_accy 32.640
+2023-12-19 05:54:13,228 [slca.py] => Task 3, Epoch 11/20 => Loss 3.112
+2023-12-19 05:54:15,054 [slca.py] => Task 3, Epoch 12/20 => Loss 4.163
+2023-12-19 05:54:16,817 [slca.py] => Task 3, Epoch 13/20 => Loss 15.173
+2023-12-19 05:54:18,608 [slca.py] => Task 3, Epoch 14/20 => Loss 18.117
+2023-12-19 05:54:30,476 [slca.py] => Task 3, Epoch 15/20 => Loss 13.448, Train_accy 6.880, Test_accy 4.690
+2023-12-19 05:54:32,355 [slca.py] => Task 3, Epoch 16/20 => Loss 13.723
+2023-12-19 05:54:34,265 [slca.py] => Task 3, Epoch 17/20 => Loss 19.390
+2023-12-19 05:54:36,005 [slca.py] => Task 3, Epoch 18/20 => Loss 20.427
+2023-12-19 05:54:37,829 [slca.py] => Task 3, Epoch 19/20 => Loss 25.311
+2023-12-19 05:54:49,631 [slca.py] => Task 3, Epoch 20/20 => Loss 12.353, Train_accy 11.250, Test_accy 5.470
+2023-12-19 05:55:10,110 [slca.py] => CA Task 3 => Loss 0.728, Test_accy 5.240
+2023-12-19 05:55:25,413 [slca.py] => CA Task 3 => Loss 0.173, Test_accy 5.920
+2023-12-19 05:55:40,721 [slca.py] => CA Task 3 => Loss 0.096, Test_accy 6.100
+2023-12-19 05:55:56,029 [slca.py] => CA Task 3 => Loss 0.060, Test_accy 6.100
+2023-12-19 05:56:11,354 [slca.py] => CA Task 3 => Loss 0.054, Test_accy 6.050
+2023-12-19 05:56:20,160 [slca.py] => Exemplar size: 0
+2023-12-19 05:56:20,931 [trainer.py] => No NME accuracy.
+2023-12-19 05:56:20,931 [trainer.py] => CNN: {'total': 6.05, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 24.14, 'old': 0.0, 'new': 24.14}
+2023-12-19 05:56:20,931 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05]
+2023-12-19 05:56:20,931 [trainer.py] => CNN top1 avg: 62.337500000000006
+2023-12-19 05:56:20,931 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37]
+
+2023-12-19 05:56:20,932 [trainer.py] => All params: 85829416
+2023-12-19 05:56:20,932 [trainer.py] => Trainable params: 85829416
+2023-12-19 05:56:20,933 [slca.py] => Learning on 40-50
+2023-12-19 05:56:22,836 [slca.py] => Task 4, Epoch 1/20 => Loss 2.846
+2023-12-19 05:56:24,652 [slca.py] => Task 4, Epoch 2/20 => Loss 4.299
+2023-12-19 05:56:26,510 [slca.py] => Task 4, Epoch 3/20 => Loss 3.085
+2023-12-19 05:56:28,428 [slca.py] => Task 4, Epoch 4/20 => Loss 7.924
+2023-12-19 05:56:42,189 [slca.py] => Task 4, Epoch 5/20 => Loss 8.413, Train_accy 9.500, Test_accy 4.410
+2023-12-19 05:56:44,205 [slca.py] => Task 4, Epoch 6/20 => Loss 5.661
+2023-12-19 05:56:46,160 [slca.py] => Task 4, Epoch 7/20 => Loss 5.079
+2023-12-19 05:56:48,008 [slca.py] => Task 4, Epoch 8/20 => Loss 5.230
+2023-12-19 05:56:49,896 [slca.py] => Task 4, Epoch 9/20 => Loss 5.665
+2023-12-19 05:57:03,707 [slca.py] => Task 4, Epoch 10/20 => Loss 6.497, Train_accy 10.000, Test_accy 4.990
+2023-12-19 05:57:05,692 [slca.py] => Task 4, Epoch 11/20 => Loss 9.015
+2023-12-19 05:57:07,670 [slca.py] => Task 4, Epoch 12/20 => Loss 7.278
+2023-12-19 05:57:09,524 [slca.py] => Task 4, Epoch 13/20 => Loss 2.727
+2023-12-19 05:57:11,402 [slca.py] => Task 4, Epoch 14/20 => Loss 3.029
+2023-12-19 05:57:25,193 [slca.py] => Task 4, Epoch 15/20 => Loss 4.489, Train_accy 11.500, Test_accy 5.510
+2023-12-19 05:57:27,107 [slca.py] => Task 4, Epoch 16/20 => Loss 2.472
+2023-12-19 05:57:29,087 [slca.py] => Task 4, Epoch 17/20 => Loss 2.424
+2023-12-19 05:57:31,054 [slca.py] => Task 4, Epoch 18/20 => Loss 1.772
+2023-12-19 05:57:32,928 [slca.py] => Task 4, Epoch 19/20 => Loss 2.485
+2023-12-19 05:57:46,881 [slca.py] => Task 4, Epoch 20/20 => Loss 1.295, Train_accy 13.500, Test_accy 6.250
+2023-12-19 05:58:11,110 [slca.py] => CA Task 4 => Loss 0.630, Test_accy 6.550
+2023-12-19 05:58:30,284 [slca.py] => CA Task 4 => Loss 0.145, Test_accy 6.570
+2023-12-19 05:58:49,122 [slca.py] => CA Task 4 => Loss 0.084, Test_accy 6.330
+2023-12-19 05:59:08,050 [slca.py] => CA Task 4 => Loss 0.059, Test_accy 6.310
+2023-12-19 05:59:26,839 [slca.py] => CA Task 4 => Loss 0.053, Test_accy 6.310
+2023-12-19 05:59:37,694 [slca.py] => Exemplar size: 0
+2023-12-19 05:59:38,419 [trainer.py] => No NME accuracy.
+2023-12-19 05:59:38,420 [trainer.py] => CNN: {'total': 6.31, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 1.71, '40-49': 29.8, 'old': 0.43, 'new': 29.8}
+2023-12-19 05:59:38,420 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05, 6.31]
+2023-12-19 05:59:38,420 [trainer.py] => CNN top1 avg: 51.132000000000005
+2023-12-19 05:59:38,420 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37, 20.65]
+
+2023-12-19 05:59:38,420 [trainer.py] => All params: 85837106
+2023-12-19 05:59:38,421 [trainer.py] => Trainable params: 85837106
+2023-12-19 05:59:38,421 [slca.py] => Learning on 50-60
+2023-12-19 05:59:40,475 [slca.py] => Task 5, Epoch 1/20 => Loss 2.637
+2023-12-19 05:59:42,388 [slca.py] => Task 5, Epoch 2/20 => Loss 1.603
+2023-12-19 05:59:44,282 [slca.py] => Task 5, Epoch 3/20 => Loss 1.310
+2023-12-19 05:59:46,302 [slca.py] => Task 5, Epoch 4/20 => Loss 1.418
+2023-12-19 06:00:02,115 [slca.py] => Task 5, Epoch 5/20 => Loss 0.962, Train_accy 13.330, Test_accy 5.710
+2023-12-19 06:00:04,068 [slca.py] => Task 5, Epoch 6/20 => Loss 0.639
+2023-12-19 06:00:06,011 [slca.py] => Task 5, Epoch 7/20 => Loss 0.950
+2023-12-19 06:00:08,069 [slca.py] => Task 5, Epoch 8/20 => Loss 0.792
+2023-12-19 06:00:10,001 [slca.py] => Task 5, Epoch 9/20 => Loss 0.740
+2023-12-19 06:00:25,629 [slca.py] => Task 5, Epoch 10/20 => Loss 1.133, Train_accy 20.000, Test_accy 6.060
+2023-12-19 06:00:27,641 [slca.py] => Task 5, Epoch 11/20 => Loss 1.091
+2023-12-19 06:00:29,542 [slca.py] => Task 5, Epoch 12/20 => Loss 0.369
+2023-12-19 06:00:31,505 [slca.py] => Task 5, Epoch 13/20 => Loss 1.205
+2023-12-19 06:00:33,497 [slca.py] => Task 5, Epoch 14/20 => Loss 1.703
+2023-12-19 06:00:49,372 [slca.py] => Task 5, Epoch 15/20 => Loss 0.575, Train_accy 16.670, Test_accy 5.830
+2023-12-19 06:00:51,350 [slca.py] => Task 5, Epoch 16/20 => Loss 0.955
+2023-12-19 06:00:53,324 [slca.py] => Task 5, Epoch 17/20 => Loss 0.584
+2023-12-19 06:00:55,294 [slca.py] => Task 5, Epoch 18/20 => Loss 1.675
+2023-12-19 06:00:57,195 [slca.py] => Task 5, Epoch 19/20 => Loss 2.852
+2023-12-19 06:01:12,889 [slca.py] => Task 5, Epoch 20/20 => Loss 1.336, Train_accy 22.080, Test_accy 7.460
+2023-12-19 06:01:40,385 [slca.py] => CA Task 5 => Loss 0.564, Test_accy 8.470
+2023-12-19 06:02:02,672 [slca.py] => CA Task 5 => Loss 0.128, Test_accy 8.390
+2023-12-19 06:02:24,854 [slca.py] => CA Task 5 => Loss 0.073, Test_accy 8.390
+2023-12-19 06:02:47,129 [slca.py] => CA Task 5 => Loss 0.051, Test_accy 8.310
+2023-12-19 06:03:09,476 [slca.py] => CA Task 5 => Loss 0.044, Test_accy 8.310
+2023-12-19 06:03:22,079 [slca.py] => Exemplar size: 0
+2023-12-19 06:03:22,812 [trainer.py] => No NME accuracy.
+2023-12-19 06:03:22,812 [trainer.py] => CNN: {'total': 8.31, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 3.17, '40-49': 18.88, '50-59': 28.0, 'old': 4.4, 'new': 28.0}
+2023-12-19 06:03:22,812 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05, 6.31, 8.31]
+2023-12-19 06:03:22,812 [trainer.py] => CNN top1 avg: 43.995000000000005
+2023-12-19 06:03:22,812 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37, 20.65, 21.08]
+
+2023-12-19 06:03:22,813 [trainer.py] => All params: 85844796
+2023-12-19 06:03:22,813 [trainer.py] => Trainable params: 85844796
+2023-12-19 06:03:22,814 [slca.py] => Learning on 60-70
+2023-12-19 06:03:25,104 [slca.py] => Task 6, Epoch 1/20 => Loss 2.528
+2023-12-19 06:03:27,284 [slca.py] => Task 6, Epoch 2/20 => Loss 4.219
+2023-12-19 06:03:29,447 [slca.py] => Task 6, Epoch 3/20 => Loss 3.286
+2023-12-19 06:03:31,733 [slca.py] => Task 6, Epoch 4/20 => Loss 5.564
+2023-12-19 06:03:49,783 [slca.py] => Task 6, Epoch 5/20 => Loss 3.032, Train_accy 11.790, Test_accy 3.910
+2023-12-19 06:03:52,136 [slca.py] => Task 6, Epoch 6/20 => Loss nan
+2023-12-19 06:03:54,347 [slca.py] => Task 6, Epoch 7/20 => Loss 5.393
+2023-12-19 06:03:56,606 [slca.py] => Task 6, Epoch 8/20 => Loss 7.652
+2023-12-19 06:03:58,773 [slca.py] => Task 6, Epoch 9/20 => Loss 5.695
+2023-12-19 06:04:16,694 [slca.py] => Task 6, Epoch 10/20 => Loss 11.337, Train_accy 8.210, Test_accy 4.460
+2023-12-19 06:04:18,870 [slca.py] => Task 6, Epoch 11/20 => Loss 16.277
+2023-12-19 06:04:21,022 [slca.py] => Task 6, Epoch 12/20 => Loss 12.499
+2023-12-19 06:04:23,207 [slca.py] => Task 6, Epoch 13/20 => Loss 11.069
+2023-12-19 06:04:25,447 [slca.py] => Task 6, Epoch 14/20 => Loss 20.296
+2023-12-19 06:04:43,578 [slca.py] => Task 6, Epoch 15/20 => Loss 17.161, Train_accy 4.640, Test_accy 3.230
+2023-12-19 06:04:45,800 [slca.py] => Task 6, Epoch 16/20 => Loss 23.902
+2023-12-19 06:04:48,076 [slca.py] => Task 6, Epoch 17/20 => Loss 17.903
+2023-12-19 06:04:50,268 [slca.py] => Task 6, Epoch 18/20 => Loss 23.212
+2023-12-19 06:04:52,559 [slca.py] => Task 6, Epoch 19/20 => Loss 32.989
+2023-12-19 06:05:10,699 [slca.py] => Task 6, Epoch 20/20 => Loss 32.476, Train_accy 5.000, Test_accy 3.230
+2023-12-19 06:05:42,150 [slca.py] => CA Task 6 => Loss 1.244, Test_accy 3.540
+2023-12-19 06:06:08,027 [slca.py] => CA Task 6 => Loss 0.310, Test_accy 4.070
+2023-12-19 06:06:33,876 [slca.py] => CA Task 6 => Loss 0.239, Test_accy 4.040
+2023-12-19 06:06:59,834 [slca.py] => CA Task 6 => Loss 0.206, Test_accy 4.270
+2023-12-19 06:07:25,698 [slca.py] => CA Task 6 => Loss 0.195, Test_accy 4.140
+2023-12-19 06:07:40,357 [slca.py] => Exemplar size: 0
+2023-12-19 06:07:41,080 [trainer.py] => No NME accuracy.
+2023-12-19 06:07:41,080 [trainer.py] => CNN: {'total': 4.14, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 0.0, '40-49': 0.0, '50-59': 0.0, '60-69': 29.04, 'old': 0.0, 'new': 29.04}
+2023-12-19 06:07:41,080 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05, 6.31, 8.31, 4.14]
+2023-12-19 06:07:41,080 [trainer.py] => CNN top1 avg: 38.30142857142857
+2023-12-19 06:07:41,080 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37, 20.65, 21.08, 11.08]
+
+2023-12-19 06:07:41,081 [trainer.py] => All params: 85852486
+2023-12-19 06:07:41,081 [trainer.py] => Trainable params: 85852486
+2023-12-19 06:07:41,082 [slca.py] => Learning on 70-80
+2023-12-19 06:07:43,447 [slca.py] => Task 7, Epoch 1/20 => Loss 3.321
+2023-12-19 06:07:45,775 [slca.py] => Task 7, Epoch 2/20 => Loss 15.192
+2023-12-19 06:07:48,075 [slca.py] => Task 7, Epoch 3/20 => Loss 24.028
+2023-12-19 06:07:50,391 [slca.py] => Task 7, Epoch 4/20 => Loss 17.063
+2023-12-19 06:08:10,411 [slca.py] => Task 7, Epoch 5/20 => Loss 14.511, Train_accy 3.750, Test_accy 2.840
+2023-12-19 06:08:12,902 [slca.py] => Task 7, Epoch 6/20 => Loss 21.523
+2023-12-19 06:08:15,201 [slca.py] => Task 7, Epoch 7/20 => Loss 26.014
+2023-12-19 06:08:17,568 [slca.py] => Task 7, Epoch 8/20 => Loss 36.017
+2023-12-19 06:08:19,874 [slca.py] => Task 7, Epoch 9/20 => Loss 23.286
+2023-12-19 06:08:40,130 [slca.py] => Task 7, Epoch 10/20 => Loss 12.924, Train_accy 4.690, Test_accy 2.850
+2023-12-19 06:08:42,483 [slca.py] => Task 7, Epoch 11/20 => Loss 12.272
+2023-12-19 06:08:44,811 [slca.py] => Task 7, Epoch 12/20 => Loss 7.072
+2023-12-19 06:08:47,125 [slca.py] => Task 7, Epoch 13/20 => Loss 8.660
+2023-12-19 06:08:49,381 [slca.py] => Task 7, Epoch 14/20 => Loss 11.693
+2023-12-19 06:09:09,349 [slca.py] => Task 7, Epoch 15/20 => Loss 13.696, Train_accy 4.060, Test_accy 2.620
+2023-12-19 06:09:11,711 [slca.py] => Task 7, Epoch 16/20 => Loss 11.927
+2023-12-19 06:09:13,951 [slca.py] => Task 7, Epoch 17/20 => Loss 8.352
+2023-12-19 06:09:16,179 [slca.py] => Task 7, Epoch 18/20 => Loss 5.763
+2023-12-19 06:09:18,441 [slca.py] => Task 7, Epoch 19/20 => Loss 7.116
+2023-12-19 06:09:38,568 [slca.py] => Task 7, Epoch 20/20 => Loss 5.233, Train_accy 3.440, Test_accy 2.410
+2023-12-19 06:10:13,479 [slca.py] => CA Task 7 => Loss 1.480, Test_accy 3.740
+2023-12-19 06:10:42,957 [slca.py] => CA Task 7 => Loss 0.441, Test_accy 3.730
+2023-12-19 06:11:12,451 [slca.py] => CA Task 7 => Loss 0.312, Test_accy 3.810
+2023-12-19 06:11:42,082 [slca.py] => CA Task 7 => Loss 0.280, Test_accy 3.910
+2023-12-19 06:12:11,634 [slca.py] => CA Task 7 => Loss 0.261, Test_accy 3.930
+2023-12-19 06:12:28,406 [slca.py] => Exemplar size: 0
+2023-12-19 06:12:29,139 [trainer.py] => No NME accuracy.
+2023-12-19 06:12:29,139 [trainer.py] => CNN: {'total': 3.93, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 0.0, '40-49': 0.0, '50-59': 0.0, '60-69': 2.11, '70-79': 29.33, 'old': 0.3, 'new': 29.33}
+2023-12-19 06:12:29,139 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05, 6.31, 8.31, 4.14, 3.93]
+2023-12-19 06:12:29,139 [trainer.py] => CNN top1 avg: 34.005
+2023-12-19 06:12:29,139 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37, 20.65, 21.08, 11.08, 11.54]
+
+2023-12-19 06:12:29,140 [trainer.py] => All params: 85860176
+2023-12-19 06:12:29,140 [trainer.py] => Trainable params: 85860176
+2023-12-19 06:12:29,141 [slca.py] => Learning on 80-90
+2023-12-19 06:12:31,685 [slca.py] => Task 8, Epoch 1/20 => Loss 2.589
+2023-12-19 06:12:34,030 [slca.py] => Task 8, Epoch 2/20 => Loss 2.517
+2023-12-19 06:12:36,466 [slca.py] => Task 8, Epoch 3/20 => Loss 2.969
+2023-12-19 06:12:38,807 [slca.py] => Task 8, Epoch 4/20 => Loss 4.212
+2023-12-19 06:13:00,927 [slca.py] => Task 8, Epoch 5/20 => Loss 3.416, Train_accy 3.330, Test_accy 2.190
+2023-12-19 06:13:03,434 [slca.py] => Task 8, Epoch 6/20 => Loss 3.945
+2023-12-19 06:13:05,796 [slca.py] => Task 8, Epoch 7/20 => Loss 2.399
+2023-12-19 06:13:08,203 [slca.py] => Task 8, Epoch 8/20 => Loss 2.717
+2023-12-19 06:13:10,656 [slca.py] => Task 8, Epoch 9/20 => Loss 1.594
+2023-12-19 06:13:32,778 [slca.py] => Task 8, Epoch 10/20 => Loss 2.373, Train_accy 4.170, Test_accy 2.520
+2023-12-19 06:13:35,185 [slca.py] => Task 8, Epoch 11/20 => Loss 1.635
+2023-12-19 06:13:37,525 [slca.py] => Task 8, Epoch 12/20 => Loss 1.663
+2023-12-19 06:13:39,885 [slca.py] => Task 8, Epoch 13/20 => Loss 1.180
+2023-12-19 06:13:42,411 [slca.py] => Task 8, Epoch 14/20 => Loss 1.242
+2023-12-19 06:14:04,362 [slca.py] => Task 8, Epoch 15/20 => Loss 0.779, Train_accy 4.720, Test_accy 2.720
+2023-12-19 06:14:06,891 [slca.py] => Task 8, Epoch 16/20 => Loss 1.479
+2023-12-19 06:14:09,331 [slca.py] => Task 8, Epoch 17/20 => Loss 0.755
+2023-12-19 06:14:11,727 [slca.py] => Task 8, Epoch 18/20 => Loss 0.616
+2023-12-19 06:14:14,041 [slca.py] => Task 8, Epoch 19/20 => Loss 0.823
+2023-12-19 06:14:36,107 [slca.py] => Task 8, Epoch 20/20 => Loss 0.709, Train_accy 3.610, Test_accy 2.960
+2023-12-19 06:15:14,665 [slca.py] => CA Task 8 => Loss 1.464, Test_accy 5.070
+2023-12-19 06:15:47,788 [slca.py] => CA Task 8 => Loss 0.437, Test_accy 5.020
+2023-12-19 06:16:20,797 [slca.py] => CA Task 8 => Loss 0.306, Test_accy 4.900
+2023-12-19 06:16:53,829 [slca.py] => CA Task 8 => Loss 0.268, Test_accy 4.980
+2023-12-19 06:17:26,854 [slca.py] => CA Task 8 => Loss 0.249, Test_accy 4.930
+2023-12-19 06:17:45,719 [slca.py] => Exemplar size: 0
+2023-12-19 06:17:46,514 [trainer.py] => No NME accuracy.
+2023-12-19 06:17:46,514 [trainer.py] => CNN: {'total': 4.93, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 0.0, '40-49': 0.0, '50-59': 0.0, '60-69': 1.7, '70-79': 10.17, '80-89': 32.56, 'old': 1.48, 'new': 32.56}
+2023-12-19 06:17:46,514 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05, 6.31, 8.31, 4.14, 3.93, 4.93]
+2023-12-19 06:17:46,515 [trainer.py] => CNN top1 avg: 30.77444444444445
+2023-12-19 06:17:46,515 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37, 20.65, 21.08, 11.08, 11.54, 14.2]
+
+2023-12-19 06:17:46,515 [trainer.py] => All params: 85867866
+2023-12-19 06:17:46,516 [trainer.py] => Trainable params: 85867866
+2023-12-19 06:17:46,516 [slca.py] => Learning on 90-100
+2023-12-19 06:17:49,427 [slca.py] => Task 9, Epoch 1/20 => Loss nan
+2023-12-19 06:17:52,003 [slca.py] => Task 9, Epoch 2/20 => Loss nan
+2023-12-19 06:17:54,628 [slca.py] => Task 9, Epoch 3/20 => Loss 1.381
+2023-12-19 06:17:57,243 [slca.py] => Task 9, Epoch 4/20 => Loss 1.344
+2023-12-19 06:18:21,869 [slca.py] => Task 9, Epoch 5/20 => Loss 1.369, Train_accy 5.000, Test_accy 2.610
+2023-12-19 06:18:24,512 [slca.py] => Task 9, Epoch 6/20 => Loss nan
+2023-12-19 06:18:27,139 [slca.py] => Task 9, Epoch 7/20 => Loss 1.896
+2023-12-19 06:18:29,788 [slca.py] => Task 9, Epoch 8/20 => Loss 2.709
+2023-12-19 06:18:32,440 [slca.py] => Task 9, Epoch 9/20 => Loss 2.263
+2023-12-19 06:18:56,912 [slca.py] => Task 9, Epoch 10/20 => Loss 1.672, Train_accy 7.000, Test_accy 2.490
+2023-12-19 06:18:59,579 [slca.py] => Task 9, Epoch 11/20 => Loss 1.881
+2023-12-19 06:19:02,255 [slca.py] => Task 9, Epoch 12/20 => Loss 1.671
+2023-12-19 06:19:04,845 [slca.py] => Task 9, Epoch 13/20 => Loss 2.289
+2023-12-19 06:19:07,585 [slca.py] => Task 9, Epoch 14/20 => Loss 2.128
+2023-12-19 06:19:32,070 [slca.py] => Task 9, Epoch 15/20 => Loss nan, Train_accy 6.000, Test_accy 2.740
+2023-12-19 06:19:34,752 [slca.py] => Task 9, Epoch 16/20 => Loss 1.236
+2023-12-19 06:19:37,451 [slca.py] => Task 9, Epoch 17/20 => Loss 2.015
+2023-12-19 06:19:40,052 [slca.py] => Task 9, Epoch 18/20 => Loss 1.098
+2023-12-19 06:19:42,636 [slca.py] => Task 9, Epoch 19/20 => Loss 0.832
+2023-12-19 06:20:07,238 [slca.py] => Task 9, Epoch 20/20 => Loss 1.027, Train_accy 6.000, Test_accy 2.790
+2023-12-19 06:20:49,301 [slca.py] => CA Task 9 => Loss 1.482, Test_accy 3.380
+2023-12-19 06:21:25,729 [slca.py] => CA Task 9 => Loss 0.444, Test_accy 3.420
+2023-12-19 06:22:01,915 [slca.py] => CA Task 9 => Loss 0.321, Test_accy 3.530
+2023-12-19 06:22:38,438 [slca.py] => CA Task 9 => Loss 0.276, Test_accy 3.550
+2023-12-19 06:23:15,104 [slca.py] => CA Task 9 => Loss 0.272, Test_accy 3.480
+2023-12-19 06:23:35,408 [slca.py] => Exemplar size: 0
+2023-12-19 06:23:36,202 [trainer.py] => No NME accuracy.
+2023-12-19 06:23:36,202 [trainer.py] => CNN: {'total': 3.48, '00-09': 0.0, '10-19': 0.0, '20-29': 0.0, '30-39': 0.0, '40-49': 0.0, '50-59': 0.0, '60-69': 1.4, '70-79': 0.3, '80-89': 7.41, '90-99': 25.68, 'old': 1.01, 'new': 25.68}
+2023-12-19 06:23:36,202 [trainer.py] => CNN top1 curve: [86.83, 78.96, 77.51, 6.05, 6.31, 8.31, 4.14, 3.93, 4.93, 3.48]
+2023-12-19 06:23:36,203 [trainer.py] => CNN top1 avg: 28.045000000000005
+2023-12-19 06:23:36,203 [trainer.py] => CNN top5 curve: [99.22, 97.34, 96.5, 18.37, 20.65, 21.08, 11.08, 11.54, 14.2, 13.2]
+
+2023-12-19 06:23:36,203 [trainer.py] => final accs: [3.48]
+2023-12-19 06:23:36,203 [trainer.py] => avg accs: [28.045000000000005]
